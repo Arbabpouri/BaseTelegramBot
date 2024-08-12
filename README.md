@@ -1,6 +1,6 @@
-# GameBot
-ربات بازی برای سرگرمی و کسب درامد انلاین
-
+# Base Telegram Bot
+ربات ساده دارای پنل ادمین برای ساخت سریعتر ربات های تلگرام
+با کتابخانه تلتون 
 # Config:
     1 - open config folder
     2 - open config.py file
