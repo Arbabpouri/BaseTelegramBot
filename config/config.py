@@ -1,11 +1,11 @@
-# coded with Love by t.me/Jarrare
+# coded with Love by Mohammad Mahdi Arbabpouri
 
 class BotConfig:
-    SESSION_NAME = "bot"
-    API_ID = 10603708
-    API_HASH = "f17d354888d912173f1599ca3133e04e"
-    BOT_TOKEN = "7344569202:AAHt_XD7vv3sizi_dTp1HfebqeaawbY-nIY"
-    BOT_USERNAME = "PlusSaverBot"  # Without @, example Folabetbot
+    SESSION_NAME = "BaseTelegramBot"
+    API_ID = 123
+    API_HASH = ""
+    BOT_TOKEN = ""
+    BOT_USERNAME = "BaseTelegramBot"  # Without @, example Folabetbot
     DEFULT_ADMINS_USER_ID = {2056493966, }
     CREATOR_USER_ID = 2056493966
     SUPPORT_USERNAME = "Jarrare" # without @, example Jarrae
