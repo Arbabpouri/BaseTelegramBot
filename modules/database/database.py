@@ -53,7 +53,7 @@ def create_table() -> None:
     Base.metadata.create_all(bind=engine)
 
 
-def defult_data() -> None:
+def default_data() -> None:
 
     with Session(bind=engine) as session:
 

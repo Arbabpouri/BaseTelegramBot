@@ -1,0 +1,10 @@
+annotated-types==0.7.0
+greenlet==3.0.3
+pyaes==1.6.1
+pyasn1==0.6.0
+pydantic==2.8.2
+pydantic_core==2.20.1
+rsa==4.9
+SQLAlchemy==2.0.32
+Telethon==1.36.0
+typing_extensions==4.12.2
