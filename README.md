@@ -52,8 +52,6 @@ The Base Telegram bot is a powerful and flexible tool that allows you to easily 
 - 📜 **Rules**: Access the bot's rules.
 - 📚 **Help**: Guide for using the bot.
 - 📞 **Contact Us**: Send your support ID for assistance.
-- 💖 **Donate**: Send wallet link for financial support of the bot.
-- 👨‍💻 **Creator**: View the creator's ID.
 
 ---
 
@@ -131,8 +129,6 @@ With Base Telegram, experience easier development and management of your Telegra
 - 📜 **قوانین**: دسترسی به قوانین ربات.
 - 📚 **راهنما**: راهنمای استفاده از ربات.
 - 📞 **ارتباط با ما**: ارسال آیدی پشتیبان برای دریافت کمک.
-- 💖 **دونیت کردن**: ارسال لینک ولت برای حمایت مالی از ربات.
-- 👨‍💻 **سازنده**: مشاهده آیدی سازنده ربات.
 
 ---
 
