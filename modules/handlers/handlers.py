@@ -10,7 +10,7 @@ from re import match
 from typing import Iterable, Any, Optional
 from asyncio import sleep
 
-from config import Strings, BotConfig
+from settings import Strings, BotConfig
 from .buttons import InlineButtonsData, InlineButtons, TextButtons, TextButtonsString, UrlButtons
 from ..database import User, Channel, Session, engine, Configs
 from .app import client

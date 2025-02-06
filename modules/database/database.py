@@ -1,7 +1,7 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, Session, backref
 from sqlalchemy import String, ForeignKey, create_engine, Integer, Text
 from typing import List
-from config import BotConfig
+from settings import BotConfig
 
 
 class Base(DeclarativeBase):
