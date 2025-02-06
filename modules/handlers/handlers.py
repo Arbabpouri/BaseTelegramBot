@@ -1,16 +1,14 @@
 from telethon.custom import Message
 from telethon.events import CallbackQuery
 from telethon.types import PeerChannel, PeerUser, Channel as ChannelInstance
-from telethon.tl.types import InputMediaDice as Dice
 from telethon.errors.rpcerrorlist import FloodWaitError
 from telethon.tl.functions.channels import GetFullChannelRequest, GetParticipantRequest
 from telethon.errors.rpcerrorlist import UserNotParticipantError, ChatAdminRequiredError, ChannelPrivateError
 from uuid import uuid4
 from abc import ABC, abstractmethod
 from re import match
-from typing import Iterable, Any
+from typing import Iterable, Any, Optional
 from asyncio import sleep
-import logging
 
 from config import Strings, BotConfig
 from .buttons import InlineButtonsData, InlineButtons, TextButtons, TextButtonsString, UrlButtons
@@ -19,11 +17,8 @@ from .app import client
 from .step import Step, step_limit, Permission
 
 
-logging.basicConfig(filename="log.txt", filemode="a",format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-async def check_join(user_id: int, invited_by_user_id: int | None = None) -> bool:
+async def check_join(user_id: int, send_message: Optional[bool] = False, invited_by_user: int | None = None) -> bool:
+    "return : yek list az button ha baraya channel haye delete shode ast"
 
     with Session(engine) as session:
         channels = session.query(Channel).all()
@@ -55,14 +50,20 @@ async def check_join(user_id: int, invited_by_user_id: int | None = None) -> boo
 
         for channel in not_admin:
             try:
-                await client.send_message(PeerUser(BotConfig.CREATOR_USER_ID), message=Strings.channel_deleted(channel))
+                await client.send_message((BotConfig.CREATOR_USER_ID), message=Strings.channel_deleted(channel))
             except Exception as e:
                 print(e)
-        if not_joined:
-            await client.send_message(PeerUser(user_id), Strings.JOIN_TO_CHANNELS, buttons=UrlButtons.channels_locked(not_joined, invited_by_user_id))
-            return False
-        return True
+        
+        if not not_joined:
+            return True
 
+        try:
+            if send_message and not_joined:
+                await client.send_message(PeerUser(user_id), Strings.JOIN_TO_CHANNELS, buttons=UrlButtons.channels_locked(not_joined, invited_user_id=invited_by_user))
+        except Exception as e:
+            print("error in send message for join channel : ". e)
+        finally:
+            return False
 
 
 # function for add new users if not database
@@ -94,7 +95,6 @@ async def add_user(user_id: int, invited_by_user_id: int | None = None) -> None:
 
             session.add(user)
             session.commit()
-            return True
         
         elif user and user.referral_active == False and user.invited_by and is_joined:
             user.referral_active = True
@@ -104,13 +104,9 @@ async def add_user(user_id: int, invited_by_user_id: int | None = None) -> None:
             try:
                 await client.send_message(PeerUser(inviter.user_id), Strings.referral_bonus(user.user_id, configs.referral_bonus), parse_mode="html")
             except Exception as e:
-                print(e)
+                print("error in add user, send bonus : ", e)
             session.commit()
-            return True
-        
-        else:
-            return is_joined
-               
+              
 
 # del user from step
 def del_step(user_id: int) -> bool:
@@ -165,10 +161,13 @@ class CallBackQueryHandlers(HandlerBase):
                 
                 invited_by = data.replace(InlineButtonsData.JOINED_IN_CHANNEL, '')
                 data = InlineButtonsData.JOINED_IN_CHANNEL
+                
                 if invited_by.isnumeric():
                     invited_by_user_id = int(invited_by)
 
-            if not await add_user(event.sender_id, invited_by_user_id):
+            add_user(event.sender_id, invited_by_user_id)
+
+            if not await check_join(user_id=event.sender_id, send_message=True, invited_by_user=invited_by_user_id):
                 return
         
             match (data):
@@ -177,18 +176,6 @@ class CallBackQueryHandlers(HandlerBase):
                     await event.delete()
                     await client.send_message(event.chat_id, Strings.START_MENU, buttons=TextButtons.START_MENU)
 
-                # case data if (data.startswith(InlineButtonsData.DICE_PLAN)):
-                #     dice_id, amount = data.replace(InlineButtonsData.DICE_PLAN, '').split('_')
-
-                #     with Session(engine) as session:
-                #         dice_plan = session.query(DicePlan).filter_by(id=int(dice_id)).first()
-                #         if not dice_plan:
-                #             return
-
-                #         await event.edit(
-                #             Strings.dice_info(dice_plan.title, dice_plan.coefficient , amount), 
-                #             buttons=InlineButtons.acc_reject_dice(dice_id, amount)
-                #         )
 
                 # case InlineButtonsData.SEND_FACTOR:
                 #     step = Permission(PART=Step.GET_PAY)
@@ -389,14 +376,16 @@ class NewMessageHandlers(HandlerBase):
             invited_by_user_id = None
 
             # this condition for get referraler user id
-            # if text.startswith("/start "):
+            if text.startswith("/start "):
                 
-            #     invited_by = text.replace("/start ", '')
-            #     text = "/start"
-            #     if invited_by.isnumeric():
-            #         invited_by_user_id = int(invited_by)
+                invited_by = text.replace("/start ", '')
+                text = "/start"
+                if invited_by.isnumeric():
+                    invited_by_user_id = int(invited_by)
 
-            if not await add_user(event.sender_id, invited_by_user_id):
+            add_user(event.sender_id, invited_by_user_id)
+
+            if not await check_join(user_id=event.sender_id, send_message=True, invited_by_user=invited_by_user_id):
                 return
             
             match (text):

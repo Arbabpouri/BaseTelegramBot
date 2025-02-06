@@ -1,12 +1,14 @@
-from sys import argv
 import os
 from telethon.events import NewMessage, CallbackQuery
 from modules import NewMessageHandlers, CallBackQueryHandlers, client, NewMessageGetInformationsHandlers
-from sqlalchemy import exc
+import logging
 from modules.handlers.rules import *
 from modules.database import default_data, create_table
 
 def main():
+
+    logging.basicConfig(filename="log.txt", filemode="a",format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+    logger = logging.getLogger(__name__)
     
     client.add_event_handler(callback=NewMessageHandlers.cancel, event=NewMessage())
     client.add_event_handler(callback=NewMessageGetInformationsHandlers.user, event=NewMessage(func=get_informations_user))
@@ -21,6 +23,7 @@ def main():
 
 
 def check_db() -> None:
+
     if os.path.exists('database.db'):
         create_table()
         default_data()
@@ -28,7 +31,7 @@ def check_db() -> None:
 if __name__ == '__main__':
 
     try:
+        check_db()
         main()
     except Exception as e:
         print("Error in run boot :", e)
-

@@ -24,7 +24,7 @@ async def user_move_text(event) -> bool:
     return ((event.message.message == "/start" or event.sender_id not in step_limit.keys()) and event.is_private and not is_ban(event.sender_id))
 
 async def user_move_inline(event) -> bool:
-    return (event.sender_id not in step_limit and not is_ban(event.sender_id))
+    return (event.sender_id not in step_limit and not is_ban(event.sender_id) and event.is_private)
 
 async def admin_move_text(event) -> bool:
     return (await user_move_text(event) and is_admin(user_id=event.sender_id) and not is_ban(event.sender_id))
