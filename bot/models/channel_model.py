@@ -3,7 +3,7 @@ from sqlalchemy.types import String
 from settings.database import Base
 
 
-class Channel(Base):
+class ChannelModel(Base):
     __tablename__ = "channels"
     channel_id: Mapped[int] = mapped_column(unique=True)
     channel_name: Mapped[str] = mapped_column(String(300))

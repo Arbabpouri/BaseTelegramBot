@@ -5,7 +5,7 @@ from settings.database import Base
 from settings.config import DEFAULT_ENTRY_PRIZE
 
 
-class User(Base):
+class UserModel(Base):
     __tablename__ = "users"
     user_id: Mapped[int] = mapped_column(unique=True)
     balance: Mapped[int] = mapped_column(default=DEFAULT_ENTRY_PRIZE)
@@ -13,4 +13,4 @@ class User(Base):
     is_ban: Mapped[bool] = mapped_column(default=False)
     referral_active: Mapped[bool] = mapped_column(nullable=True, default=None)
     invited_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=True, default=None)
-    referrals: Mapped[List["User"]] = relationship('User', remote_side='User.id', backref=backref('user_referrals'))
+    referrals: Mapped[List["UserModel"]] = relationship('User', remote_side='User.id', backref=backref('user_referrals'))
