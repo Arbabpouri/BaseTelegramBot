@@ -1,5 +1,5 @@
 from ..database import User, engine
-from .buttons import InlineButtonsData
+from ..buttons.buttons import InlineButtonsData
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from .step import step_limit

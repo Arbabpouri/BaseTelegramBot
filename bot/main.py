@@ -1,9 +1,9 @@
 import os
 from telethon.events import NewMessage, CallbackQuery
-from modules import NewMessageHandlers, CallBackQueryHandlers, client, NewMessageGetInformationsHandlers
+from bot import NewMessageHandlers, CallBackQueryHandlers, client, NewMessageGetInformationsHandlers
 import logging
-from modules.handlers.rules import *
-from modules.database import default_data, create_table
+from handlers.rules import *
+from database import default_data, create_table
 
 def main():
 
