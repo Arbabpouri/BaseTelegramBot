@@ -9,6 +9,6 @@ client = TelegramClient(
 ).start(bot_token=BotConfig.BOT_TOKEN)
 
 
-from .admin_settings import *
+from .admin_settings_handlers import *
 from .send_message_settings import *
 from .channels_settings import *
