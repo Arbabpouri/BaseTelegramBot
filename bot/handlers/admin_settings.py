@@ -1,17 +1,22 @@
-from telethon.events import NewMessage
+from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
 from . import client
 
 
+# CallbackQuery handler, show bots admins
 
 async def show_admins(event: Message) -> None:
     pass
 
 
-async def add_admin(event: Message) -> None:
+# CallbackQuery handler, set step for add admin
+
+async def add_admin_set_step(event: Message) -> None:
     pass
 
 
-async def remove_admin(event: Message) -> None:
+# CallbackQuery handler, set step for remove admin
+
+async def remove_admin_set_step(event: Message) -> None:
     pass
 

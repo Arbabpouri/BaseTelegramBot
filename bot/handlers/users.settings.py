@@ -1,4 +1,4 @@
-from telethon.events import NewMessage
+from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
 from . import client
 
