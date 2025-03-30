@@ -12,7 +12,7 @@ from asyncio import sleep
 
 from settings import Strings, BotConfig
 from ..buttons.buttons import InlineButtonsData, InlineButtons, TextButtons, TextButtonsString, UrlButtons
-from ..database import User, Channel, Session, engine, Configs
+from ..models import User, Channel, Session, engine, Configs
 from .app import client
 from .step import Step, step_limit, Permission
 

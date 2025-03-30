@@ -1,4 +1,4 @@
-from ..database import User, engine
+from ..models import User, engine
 from ..buttons.buttons import InlineButtonsData
 from sqlalchemy.orm import Session
 from sqlalchemy import and_

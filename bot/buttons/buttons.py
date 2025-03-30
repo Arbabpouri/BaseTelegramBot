@@ -1,7 +1,7 @@
 from telethon import Button
 from typing import List, Tuple, Iterable
 from settings import BotConfig
-from ..database import Session, Configs, engine, Channel
+from ..models import Session, Configs, engine, Channel
 
 # region TextButton
 
