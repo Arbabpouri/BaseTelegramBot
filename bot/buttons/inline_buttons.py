@@ -1,9 +1,10 @@
 from telethon import Button
-from typing import Iterable, Tuple, List
-from models.channel_model import Channel
+from typing import Optional
+from functions.database_functions import get_channels
 
-
+# All Inline Button Data
 class InlineButtonsData:
+    
     BOT_STATS = "BOT_STATS"
     ADMIN_SETTING_PANEL = "ADMIN_SETTING_PANEL"
     USER_SETTING_PANEL = "USER_SETTING_PANEL"
@@ -27,10 +28,13 @@ class InlineButtonsData:
     CHANGE_REFERRAL_BONUS = "CHANGE_REFERRAL_BONUS"
     JOINED_IN_CHANNEL = "JOINED_IN_CHANNEL_"
     BACK_TO_ADMIN = "BACK_TO_ADMIN"
+    
+    
     delete_channel = lambda channel_id: f"{InlineButtonsData.DELETE_CHANNEL}{channel_id}"
     joined_in_channel = lambda user_id: f"{InlineButtonsData.JOINED_IN_CHANNEL}{user_id}"
     
 
+# All Inline Button Text
 class InlineButtonString:
     BOT_STATS = "👥|امار ربات|👥"
     ADMIN_SETTING_PANEL = "👨🏻‍💻|مدیریت ادمین|🧑🏻‍💻"
@@ -54,13 +58,14 @@ class InlineButtonString:
     CHANGE_TRUST_CHANNEL = "⚙️| تغییر کانال اعتماد"
     CHANGE_REFERRAL_BONUS = "⚙️| تغییر هزینه زیرمجموعه"
     JOINED_IN_CHANNEL = "تایید عضویت ✅"
-    BACK_TO_ADMIN = "📍 | بازگشت"
+    BACK = "📍 | بازگشت"
 
 
+# All Inline Button
 class InlineButtons:
 
     BACK_TO_ADMIN = (
-        Button.inline(text=InlineButtonString.BACK_TO_ADMIN, data=InlineButtonsData.BACK_TO_ADMIN),
+        Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.BACK_TO_ADMIN),
     )
 
     ADMIN_PANEL = (
@@ -131,9 +136,11 @@ class InlineButtons:
 
 
     @staticmethod
-    def channels_panel(channels: Iterable[Channel]) -> List[Tuple[Channel]]:
+    async def channels_panel():
         
         buttons = []
+        
+        channels = await get_channels()
 
         for channel in channels:
             buttons.append(
@@ -148,11 +155,22 @@ class InlineButtons:
                 Button.inline(text=InlineButtonString.ADD_CHANNEL, data=InlineButtonsData.ADD_CHANNEL),
             )
         )
+        
         buttons.append(InlineButtons.BACK_TO_ADMIN)
-
         return buttons
 
 
     @staticmethod
-    def check_joined(user_id: int | None = None) -> Tuple[Button]:
+    def check_joined(user_id: int | None = None):
         return Button.inline(text=InlineButtonString.JOINED_IN_CHANNEL, data=InlineButtonsData.joined_in_channel(user_id))
+
+
+    @staticmethod
+    def back_to(
+        admin_panel: Optional[bool] = False,
+    ):
+        
+        text = InlineButtonString.BACK
+        data = InlineButtonsData.BACK_TO_ADMIN
+        
+        return Button.inline(text=text, data=data)
