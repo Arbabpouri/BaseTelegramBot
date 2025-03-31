@@ -2,11 +2,14 @@ from telethon import Button
 from typing import Iterable, Tuple, List
 from buttons.inline_buttons import InlineButtons
 from models.channel_model import ChannelModel
+from functions.database_functions import get_config, get_channels
 from settings.config import SUPPORT_USERNAME
+
+
 
 class UrlButtonString:
     CONTACT_US = "✍🏻| پیام به ادمین |✍🏻"
-    TRUST_CHANNEL = "💰|کانال واریزی ها|💰"
+    SUPPORT_CHANNEL = "💢| کانال پشتیبانی |💢"
 
 
 class UrlButtons:
@@ -19,29 +22,36 @@ class UrlButtons:
     )
 
     @staticmethod
-    def trust_channel() -> Tuple[Tuple[Button]]:
-        with Session(engine) as session:
-            info = session.query(Configs).first()
+    async def support_channel():
+        
+        config = await get_config()
         
         return (
             (
-                Button.url(text=UrlButtonString.TRUST_CHANNEL, url=info.trust_channel_url)
+                Button.url(text=UrlButtonString.SUPPORT_CHANNEL, url=config.support_channel_url),
             ),
         )
     
 
     @staticmethod
-    def channels_locked(channels: Iterable[ChannelModel], invited_user_id: int | None = None) -> List[Tuple[Button]]:
+    async def channels_locked(invited_user_id: int | None = None):
+        
+        channels = await get_channels()
         
         buttons = []
 
         for channel in channels:
             
-            try:
-                buttons.append((Button.url(text=channel.channel_name, url=channel.channel_url),))
-            except Exception as e:
-                print(e)
+            buttons.append(
+                (
+                    Button.url(text=channel.channel_name, url=channel.channel_url),
+                )
+            )
 
-        buttons.append((InlineButtons.check_joined(invited_user_id),))
+        buttons.append(
+            (
+                InlineButtons.check_joined(invited_user_id),
+            )
+        )
 
         return buttons
