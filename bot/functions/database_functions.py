@@ -194,4 +194,18 @@ async def update_configs(support_channel_url: str | None = None, help_text: str 
     return config
 
 
+# get config
+async def get_config() -> ConfigsModel:
+    "get config"
+    
+    session = get_session()
+    config = session.query(ConfigsModel).first()
+    
+    if not config:
+        config = ConfigsModel()
+        session.add(config)
+        
+    return config
+
+
 # endregion
