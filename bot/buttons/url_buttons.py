@@ -1,7 +1,5 @@
 from telethon import Button
-from typing import Iterable, Tuple, List
 from buttons.inline_buttons import InlineButtons
-from models.channel_model import ChannelModel
 from functions.database_functions import get_config, get_channels
 from settings.config import SUPPORT_USERNAME
 
