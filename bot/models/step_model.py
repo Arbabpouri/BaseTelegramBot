@@ -1,6 +1,16 @@
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.types import String
+from settings.database import Base
 from pydantic import BaseModel
 from enum import unique, IntEnum
 from typing import Any
+
+class StepModel(Base):
+    __tablename__ = "steps"
+    step_id: Mapped[int] = mapped_column()
+
+
+
 
 
 class Permission(BaseModel):
@@ -30,11 +40,5 @@ class Step(IntEnum):
     CHANGE_TRUST_CHANNEL = 14
     CHANGE_REFERRAL_BONUS = 15
     GET_MESSAGE = 16
-    # GET_PAY = 17
-    # GET_PAY_AMOUNT = 18
-    # GET_WITHDRAW_AMOUNT = 19
-    # GET_WALLET = 20
-    # GET_TXID_WITHDRAW = 21
-
 
 step_limit = dict()
