@@ -12,5 +12,5 @@ class UserModel(Base):
     is_admin: Mapped[bool] = mapped_column(default=False)
     is_ban: Mapped[bool] = mapped_column(default=False)
     referral_active: Mapped[bool] = mapped_column(nullable=True, default=None)
-    invited_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=True, default=None)
-    referrals: Mapped[List["UserModel"]] = relationship('User', remote_side='User.id', backref=backref('user_referrals'))
+    invited_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=True, default=None)
+    referrals: Mapped[List["UserModel"]] = relationship('User', remote_side='User.user_id', backref=backref('user_referrals'))
