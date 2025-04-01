@@ -1,16 +1,6 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.types import String
-from settings.database import Base
 from pydantic import BaseModel
 from enum import unique, IntEnum
 from typing import Any
-
-class StepModel(Base):
-    __tablename__ = "steps"
-    step_id: Mapped[int] = mapped_column()
-
-
-
 
 
 class Permission(BaseModel):
@@ -22,7 +12,8 @@ class Permission(BaseModel):
 
 
 @unique
-class Step(IntEnum):
+class Parts(IntEnum):
+    NOTHING = -1
     ADD_ADMIN = 0
     DELETE_ADMIN = 1
     SHOW_ADMINS = 2
