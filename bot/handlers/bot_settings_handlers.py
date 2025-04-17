@@ -1,11 +1,17 @@
+# region imports
+
 from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
 from functions.database_functions import get_config, update_configs
 from functions.step_functions import Parts, set_step, delete_step
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
-from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL
+from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED
 from . import client
 
+# endregion
+
+
+# region CallBackQuery Handlers
 
 # CallbackQuery handler, show bots configs settings
 @client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_CONFIGS))
@@ -83,4 +89,78 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     finally:
         pass
     
+# endregion
 
+
+# region NewMessageHandlers
+
+# NewMessage handler, change rule
+@client.on(event=NewMessage(pattern=".*"))
+async def set_rule(event: Message) -> None:
+    
+    try:
+    
+        update_configs(rules_text=str(event.message.message))
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+    
+    
+# NewMessage handler, change help
+@client.on(event=NewMessage(pattern=".*"))
+async def set_help(event: Message) -> None:
+    
+    try:
+    
+        update_configs(help_text=str(event.message.message))
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+    
+    
+# NewMessage handler, change support channel
+@client.on(event=NewMessage(pattern="^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+"))
+async def set_support_channel(event: Message) -> None:
+    
+    try:
+    
+        update_configs(support_channel_url=str(event.message.message))
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+    
+    
+# NewMessage handler, change referral bonus
+@client.on(event=NewMessage(pattern="^[0-9]*"))
+async def set_referral_bonus(event: Message) -> None:
+    
+    try:
+    
+        update_configs(referral_bonus=int(event.message.message))
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+    
+    
+# NewMessage handler, change entry prize
+@client.on(event=NewMessage(pattern="^[0-9]*"))
+async def set_entry_prize(event: Message) -> None:
+    
+    try:
+    
+        update_configs(entry_prize=int(event.message.message))
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+
+# endregion
