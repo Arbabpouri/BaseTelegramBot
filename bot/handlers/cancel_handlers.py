@@ -11,11 +11,11 @@ from . import client
 async def cancel_user_inline(event: CallbackQuery.Event) -> None:
     
     try:
-        delete_step(event.sender_id)
+
         await event.edit(CANCELED, buttons=InlineButtons.ADMIN_PANEL)
     
     finally:
-        pass
+        delete_step(event.sender_id)
     
     
 # CallbackQuery handler, cancel and delete step
@@ -23,8 +23,7 @@ async def cancel_user_inline(event: CallbackQuery.Event) -> None:
 async def cancel_admin_inline(event: CallbackQuery.Event) -> None:
     
     try:
-        delete_step(event.sender_id)
         await event.edit(CANCELED, buttons=TextButtons.START_MENU)
     
     finally:
-        pass
+        delete_step(event.sender_id)
