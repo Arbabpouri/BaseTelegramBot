@@ -6,29 +6,32 @@ from functions.database_functions import get_channels
 # All Inline Button Data
 class InlineButtonsData:
     
-    BOT_STATS = "BOT_STATS"
-    ADMIN_SETTING_PANEL = "ADMIN_SETTING_PANEL"
-    USER_SETTING_PANEL = "USER_SETTING_PANEL"
-    CHANNEL_PANEL = "CHANNEL_PANEL"
-    SEND_PANEL = "SEND_PANEL"
-    CHANGE_CONFIGS = "CHANGE_CONFIGS"
-    ADD_ADMIN = "ADD_ADMIN"
-    DELETE_ADMIN = "DELETE_ADMIN"
-    SHOW_ADMINS = "SHOW_ADMIN"
-    ADD_CHANNEL = "ADD_CHANNEL"
-    DELETE_CHANNEL = "DELETE_CHANNEL-"
-    SEND_TO_USER = "SEND_TO_USER"
-    SEND_TO_USERS = "SEND_TO_USERS"
-    BAN_USER = "BAN_USER"
-    UNBAN_USER = "UNBAN_USER"
-    SHOW_USER_INFO = "SHOW_USER_INFO"
-    CHANGE_RULES_TEXT = "CHANGE_RULES_TEXT"
-    CHANGE_HELP_TEXT = "CHANGE_HELP_TEXT"
-    CHANGE_ENTERY_PRIZE = "CHANGE_ENTERY_PRIZE"
-    CHANGE_TRUST_CHANNEL = "CHANGE_TRUST_CHANNEL"
-    CHANGE_REFERRAL_BONUS = "CHANGE_REFERRAL_BONUS"
-    JOINED_IN_CHANNEL = "JOINED_IN_CHANNEL_"
-    BACK_TO_ADMIN = "BACK_TO_ADMIN"
+    BOT_STATS = b"BOT_STATS"
+    ADMIN_SETTING_PANEL = b"ADMIN_SETTING_PANEL"
+    USER_SETTING_PANEL = b"USER_SETTING_PANEL"
+    CHANNEL_PANEL = b"CHANNEL_PANEL"
+    SEND_PANEL = b"SEND_PANEL"
+    CHANGE_CONFIGS = b"CHANGE_CONFIGS"
+    ADD_ADMIN = b"ADD_ADMIN"
+    DELETE_ADMIN = b"DELETE_ADMIN"
+    SHOW_ADMINS = b"SHOW_ADMIN"
+    ADD_CHANNEL = b"ADD_CHANNEL"
+    DELETE_CHANNEL = b"DELETE_CHANNEL-"
+    SEND_TO_USER = b"SEND_TO_USER"
+    SEND_TO_USERS = b"SEND_TO_USERS"
+    BAN_USER = b"BAN_USER"
+    UNBAN_USER = b"UNBAN_USER"
+    SHOW_USER_INFO = b"SHOW_USER_INFO"
+    CHANGE_RULES_TEXT = b"CHANGE_RULES_TEXT"
+    CHANGE_HELP_TEXT = b"CHANGE_HELP_TEXT"
+    CHANGE_ENTERY_PRIZE = b"CHANGE_ENTERY_PRIZE"
+    CHANGE_SUPPORT_CHANNEL = b"CHANGE_SUPPORT_CHANNEL"
+    CHANGE_REFERRAL_BONUS = b"CHANGE_REFERRAL_BONUS"
+    JOINED_IN_CHANNEL = b"JOINED_IN_CHANNEL_"
+    BACK_TO_ADMIN = b"BACK_TO_ADMIN"
+    BACK_TO_ADMIN_SETTING = b"BACK_TO_ADMIN_SETTING"
+    CANCEL_ADMIN = b"CANCEL_ADMIN"
+    CANCEL_USER = b"CANCEL_USER"
     
     
     delete_channel = lambda channel_id: f"{InlineButtonsData.DELETE_CHANNEL}{channel_id}"
@@ -65,6 +68,7 @@ class InlineButtonString:
 # all backs enum, using for InlineButtons.back_to
 class BackToEnum(IntEnum):
     ADMIN_PANEL = 0
+    ADMIN_SETTING = 1
     
 
 # All Inline Button
@@ -109,6 +113,10 @@ class InlineButtons:
             case BackToEnum.ADMIN_PANEL:
                 text = InlineButtonString.BACK
                 data = InlineButtonsData.BACK_TO_ADMIN
+                
+            case BackToEnum.ADMIN_SETTING:
+                text = InlineButtonString.BACK
+                data = InlineButtonsData.BACK_TO_ADMIN_SETTING
             
             case _:
                 text = InlineButtonString.BACK
@@ -194,4 +202,9 @@ class InlineButtons:
         (
             back_to(back_to=BackToEnum.ADMIN_PANEL),
         )
+    )
+
+
+    CANCEL = (
+        Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.CANCEL),
     )

@@ -28,8 +28,16 @@ class Parts(IntEnum):
     CHANGE_RULES_TEXT = 11
     CHANGE_HELP_TEXT = 12
     CHANGE_ENTERY_PRIZE = 13
-    CHANGE_TRUST_CHANNEL = 14
+    CHANGE_SUPPORT_CHANNEL = 14
     CHANGE_REFERRAL_BONUS = 15
     GET_MESSAGE = 16
 
 step_limit = dict()
+
+
+def set_step(user_id: int, step: Parts | int) -> None:
+    pass
+
+
+def delete_step(user_id: int) -> None:
+    pass

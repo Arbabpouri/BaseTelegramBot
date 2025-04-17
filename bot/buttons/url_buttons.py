@@ -20,13 +20,11 @@ class UrlButtons:
     )
 
     @staticmethod
-    async def support_channel():
-        
-        config = await get_config()
-        
+    async def support_channel(support_channel_url: str):
+                
         return (
             (
-                Button.url(text=UrlButtonString.SUPPORT_CHANNEL, url=config.support_channel_url),
+                Button.url(text=UrlButtonString.SUPPORT_CHANNEL, url=support_channel_url),
             ),
         )
     

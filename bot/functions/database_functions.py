@@ -44,6 +44,13 @@ async def user_is_admin(user_id: int) -> bool:
     return bool(user and user.is_admin)
 
 
+# get admins, return list[UserModel] if admins else empty list 
+async def get_admins() -> list[UserModel] | None:
+    "get admins, return list[UserModel] if admins else empty list"
+    session = get_session()
+    return session.query(UserModel).filter_by(is_admin=True).all()
+    
+
 # check user is ban ? True or False
 async def user_is_ban(user_id: int) -> bool:
     "check user is ban ? True or False"
