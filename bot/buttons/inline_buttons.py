@@ -205,6 +205,10 @@ class InlineButtons:
     )
 
 
-    CANCEL = (
-        Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.CANCEL),
+    CANCEL_ADMIN = (
+        Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.CANCEL_ADMIN),
+    )
+    
+    CANCEL_USER = (
+        Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.CANCEL_USER),
     )
