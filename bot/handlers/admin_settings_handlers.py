@@ -104,7 +104,7 @@ async def new_admin(event: Message) -> None:
         await event.reply(ADDED, buttons=InlineButtons.ADMIN_SETTING)
     
     finally:
-        pass
+        delete_step(user_id=event.sender_id)
 
 
 # NewMessage handler, get admin user id and check in db? and remove from db
@@ -120,7 +120,7 @@ async def delete_admin(event: Message) -> None:
         await event.reply(ADDED, buttons=InlineButtons.ADMIN_SETTING)
     
     finally:
-        pass
+        delete_step(user_id=event.sender_id)
 
 
 # endregion
