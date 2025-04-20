@@ -79,8 +79,24 @@ async def filter_get_message_send_user(event) -> bool:
         get_user_step(event.sender_id).step == Parts.GET_MESSAGE_SEND_TO_USER and 
         await user_is_admin(event.sender_id)
     )
-    
 
+async def filter_ban_user(event) -> bool:
+    return bool(
+        get_user_step(event.sender_id).step == Parts.BAN_USER and 
+        await user_is_admin(event.sender_id)
+    )
+
+async def filter_unban_user(event) -> bool:
+    return bool(
+        get_user_step(event.sender_id).step == Parts.UNBAN_USER and 
+        await user_is_admin(event.sender_id)
+    )
+    
+async def filter_user_info(event) -> bool:
+    return bool(
+        get_user_step(event.sender_id).step == Parts.SHOW_USER_INFO and 
+        await user_is_admin(event.sender_id)
+    )
 
 async def filter_(event) -> bool:
     return bool(
