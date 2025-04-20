@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import NewMessage, CallbackQuery
+from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from functions.database_functions import add_admin, remove_admin, get_admins
 from functions.step_functions import Parts, set_step, delete_step
@@ -31,7 +31,7 @@ async def admin_settings_panel(event: CallbackQuery.Event) -> None:
         await event.edit(SELECT, buttons=InlineButtons.back_to(BackToEnum.ADMIN_PANEL))
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, show bots admins
@@ -43,7 +43,7 @@ async def show_admins(event: CallbackQuery.Event) -> None:
         await event.edit(string_show_admins(admins=await get_admins()), buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING))
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, set step for add admin
@@ -56,7 +56,7 @@ async def add_admin_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
 
 # CallbackQuery handler, set step for remove admin
@@ -69,7 +69,7 @@ async def remove_admin_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # endregion
@@ -86,7 +86,7 @@ async def open_admin_panel(event: Message) -> None:
         await event.reply(ADMIN_PANEL, buttons=InlineButtons.ADMIN_PANEL)
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # NewMessage handler, get admin user id and add to db
@@ -100,11 +100,12 @@ async def new_admin(event: Message) -> None:
         if not add:
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
             return None
-        
+        delete_step(user_id=event.sender_id)
         await event.reply(ADDED, buttons=InlineButtons.ADMIN_SETTING)
     
     finally:
-        delete_step(user_id=event.sender_id)
+        
+        raise StopPropagation
 
 
 # NewMessage handler, get admin user id and check in db? and remove from db
@@ -117,10 +118,10 @@ async def delete_admin(event: Message) -> None:
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
             return None
         
+        delete_step(user_id=event.sender_id)
         await event.reply(ADDED, buttons=InlineButtons.ADMIN_SETTING)
     
     finally:
-        delete_step(user_id=event.sender_id)
-
+        raise StopPropagation
 
 # endregion

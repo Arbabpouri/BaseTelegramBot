@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import NewMessage, CallbackQuery
+from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from telethon.types import PeerUser
 from telethon.errors import FloodWaitError
@@ -89,7 +89,7 @@ async def get_message_send_to_users(event: Message) -> None:
         await event.reply(message_sended(success_num=success))
         
     finally:
-        pass
+        raise StopPropagation
 
 
 @client.on(event=NewMessage(pattern=r"[0-9]*", incoming=True, func=filter_get_user_send))
@@ -107,7 +107,7 @@ async def get_user_send_to_user(event: Message) -> None:
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
 
 @client.on(event=NewMessage(incoming=True, func=filter_get_message_send_user))
@@ -126,6 +126,6 @@ async def get_message_send_to_user(event: Message) -> None:
 
     
     finally:
-        pass  
+        raise StopPropagation  
     
 # endregion

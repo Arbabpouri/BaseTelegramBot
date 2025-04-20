@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import CallbackQuery, NewMessage
+from telethon.events import CallbackQuery, NewMessage, StopPropagation
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import BACKED
@@ -21,10 +21,9 @@ async def back_to_admin_panel(event: CallbackQuery.Event) -> None:
         await event.edit(BACKED, buttons=InlineButtons.ADMIN_PANEL)
     
     finally:
-        pass
+        raise StopPropagation
     
     
-
 # CallbackQuery handler, back to admin settings
 @client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN, func=filter_admin_move))
 async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
@@ -34,7 +33,7 @@ async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
         await event.edit(BACKED, buttons=InlineButtons.ADMIN_SETTING)
     
     finally:
-        pass
+        raise StopPropagation
     
 
 # endregion
@@ -51,6 +50,6 @@ async def back_to_start_panel(event: CallbackQuery.Event) -> None:
         await event.reply(BACKED, buttons=TextButtons.START_MENU)
     
     finally:
-        pass
+        raise StopPropagation
     
 # endregion

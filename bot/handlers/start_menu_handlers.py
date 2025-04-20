@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import CallbackQuery, NewMessage
+from telethon.events import CallbackQuery, NewMessage, StopPropagation
 from buttons.text_buttons import TextButtons, TextButtonsString
 from buttons.url_buttons import UrlButtons
 from buttons.commands import Commands
@@ -24,7 +24,7 @@ async def start_menu(event: CallbackQuery.Event) -> None:
         await event.reply(START_MENU, buttons=TextButtons.START_MENU)
     
     finally:
-        pass
+        raise StopPropagation
 
 
 # NewMessage handler, back to start menu panel
@@ -36,7 +36,7 @@ async def rules(event: CallbackQuery.Event) -> None:
         await event.reply(await configs.rules_text, buttons=TextButtons.START_MENU)
     
     finally:
-        pass
+        raise StopPropagation
     
     
 # NewMessage handler, back to start menu panel
@@ -48,7 +48,7 @@ async def help(event: CallbackQuery.Event) -> None:
         await event.reply(await configs.help_text, buttons=await UrlButtons.support_channel(configs.support_channel_url))
     
     finally:
-        pass
+        raise StopPropagation
     
 
 # NewMessage handler, back to start menu panel
@@ -59,7 +59,7 @@ async def contact_us(event: CallbackQuery.Event) -> None:
         await event.reply(CONTACT_US, buttons=UrlButtons.CONTACT_US)
     
     finally:
-        pass
+        raise StopPropagation
     
     
 # NewMessage handler, back to start menu panel
@@ -71,7 +71,7 @@ async def deposit(event: CallbackQuery.Event) -> None:
         await event.reply(SELECT, buttons=TextButtons.DEPOSIT_PLAN)
     
     finally:
-        pass
+        raise StopPropagation
     
     
 # NewMessage handler, back to start menu panel
@@ -86,6 +86,6 @@ async def referral(event: CallbackQuery.Event) -> None:
         await client.send_message(entity=event.chat_id, message=referral_reply(user, configs), buttons=TextButtons.DEPOSIT_PLAN, reply_to=message)
 
     finally:
-        pass
+        raise StopPropagation
 
 # endregion

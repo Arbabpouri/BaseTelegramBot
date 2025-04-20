@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import NewMessage, CallbackQuery
+from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from functions.database_functions import get_user, ban_user, unban_user
 from functions.step_functions import Parts, set_step, delete_step
@@ -23,7 +23,7 @@ async def user_panel(event: CallbackQuery.Event) -> None:
         await event.edit(SELECT, buttons=InlineButtons.USER_SETTING)
     
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, set step for add channels
@@ -36,7 +36,7 @@ async def ban_user_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, set step for add channels
@@ -49,7 +49,7 @@ async def unban_user_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
 
     
 # CallbackQuery handler, set step for add channels
@@ -62,7 +62,7 @@ async def show_user_info_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
 # endregion
 
@@ -84,7 +84,7 @@ async def ban_user_from_bot(event: Message) -> None:
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # NewMessage handler, UnBan user
@@ -102,7 +102,7 @@ async def unban_user_from_bot(event: Message) -> None:
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
         
     finally:
-        pass
+        raise StopPropagation
     
     
 # NewMessage handler, show user info
@@ -121,7 +121,7 @@ async def get_user_info(event: Message) -> None:
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
 
 
 

@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import NewMessage, CallbackQuery
+from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from telethon.tl.functions.channels import GetFullChannelRequest
 from telethon.types import Channel, PeerChannel
@@ -33,7 +33,7 @@ async def channels_panel(event: CallbackQuery.Event) -> None:
         await event.edit(SELECT, buttons=await InlineButtons.channels_panel())
     
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, set step for add channels
@@ -46,7 +46,7 @@ async def add_channel_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ADD_CHANNEL, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
     
 # CallBack handler, get channels user id and check in db? and remove from db
@@ -62,7 +62,7 @@ async def delete_channel(event: Message) -> None:
             await event.edit(ERROR, buttons=await InlineButtons.channels_panel())
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # endregion
@@ -112,7 +112,7 @@ async def new_channel(event: Message) -> None:
                         
     finally:
         
-        pass
+        raise StopPropagation
 
 
 # endregion

@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import CallbackQuery, NewMessage
+from telethon.events import CallbackQuery, NewMessage, StopPropagation
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import bot_stats, my_account
@@ -23,7 +23,7 @@ async def bot_status(event: CallbackQuery.Event) -> None:
         await event.edit(bot_stats(users=users_num, channels=channels_num), buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING))
         
     finally:
-        pass
+        raise StopPropagation
 
 # endregion
 
@@ -40,6 +40,6 @@ async def user_account_info(event: CallbackQuery.Event) -> None:
         await event.reply(my_account(user=user), buttons=TextButtons.START_MENU)
         
     finally:
-        pass
+        raise StopPropagation
 
 # endregion

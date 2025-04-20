@@ -1,6 +1,6 @@
 # region imports
 
-from telethon.events import NewMessage, CallbackQuery
+from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from functions.database_functions import update_configs
 from functions.step_functions import Parts, set_step, delete_step
@@ -13,7 +13,7 @@ from functions.filters_functions import (
     filter_set_referral_bonus,
 )
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
-from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED
+from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED, ERROR
 from . import client
 
 # endregion
@@ -30,7 +30,7 @@ async def config_settings_panel(event: CallbackQuery.Event) -> None:
         await event.edit(SELECT, buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING))
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, set step for change entry prize
@@ -43,7 +43,7 @@ async def change_entry_prize_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_NUMBER, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
 
 # CallbackQuery handler, set step change referral bonus set step
@@ -56,7 +56,7 @@ async def remove_config_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_NUMBER, buttons=InlineButtons.CANCEL_ADMIN)
         
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, set step for change rule set step
@@ -69,7 +69,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
 
 # CallbackQuery handler, set step for change helps set step
@@ -82,7 +82,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
     
 # CallbackQuery handler, set step for change support channel set step
@@ -95,7 +95,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_URL, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
     
 # endregion
 
@@ -111,9 +111,13 @@ async def set_rule(event: Message) -> None:
         update_configs(rules_text=str(event.message.message))
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
+        
     finally:
         
         delete_step(user_id=event.sender_id)
+        raise StopPropagation
     
     
 # NewMessage handler, change help
@@ -125,9 +129,13 @@ async def set_help(event: Message) -> None:
         update_configs(help_text=str(event.message.message))
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
+        
     finally:
         
         delete_step(user_id=event.sender_id)
+        raise StopPropagation
     
     
 # NewMessage handler, change support channel
@@ -139,9 +147,13 @@ async def set_support_channel(event: Message) -> None:
         update_configs(support_channel_url=str(event.message.message))
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
+        
     finally:
         
         delete_step(user_id=event.sender_id)
+        raise StopPropagation
     
     
 # NewMessage handler, change referral bonus
@@ -153,9 +165,13 @@ async def set_referral_bonus(event: Message) -> None:
         update_configs(referral_bonus=int(event.message.message))
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
+        
     finally:
         
         delete_step(user_id=event.sender_id)
+        raise StopPropagation
     
     
 # NewMessage handler, change entry prize
@@ -166,9 +182,13 @@ async def set_entry_prize(event: Message) -> None:
     
         update_configs(entry_prize=int(event.message.message))
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+    
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
         
     finally:
         
         delete_step(user_id=event.sender_id)
+        raise StopPropagation
 
 # endregion
