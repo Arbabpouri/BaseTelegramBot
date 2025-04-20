@@ -25,7 +25,7 @@ async def back_to_admin_panel(event: CallbackQuery.Event) -> None:
     
     
 # CallbackQuery handler, back to admin settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN_SETTING, func=filter_admin_move))
 async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
     
     try:

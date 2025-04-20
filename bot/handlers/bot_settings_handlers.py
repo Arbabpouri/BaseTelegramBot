@@ -27,7 +27,7 @@ async def config_settings_panel(event: CallbackQuery.Event) -> None:
     
     try:
     
-        await event.edit(SELECT, buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING))
+        await event.edit(SELECT, buttons=InlineButtons.CONFIGS_PANEL)
         
     finally:
         raise StopPropagation

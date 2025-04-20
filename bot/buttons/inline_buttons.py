@@ -96,7 +96,11 @@ class InlineButtons:
             )
         )
         
-        buttons.append(InlineButtons.BACK_TO_ADMIN)
+        buttons.append(
+            (
+                InlineButtons.back_to(BackToEnum.ADMIN_PANEL),
+            )
+        )
         return buttons
 
 
@@ -208,6 +212,7 @@ class InlineButtons:
     CANCEL_ADMIN = (
         Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.CANCEL_ADMIN),
     )
+
     
     CANCEL_USER = (
         Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.CANCEL_USER),

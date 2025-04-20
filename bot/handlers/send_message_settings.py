@@ -29,7 +29,7 @@ async def send_panel(event: CallbackQuery.Event) -> None:
     
     try:
     
-        await event.edit(SELECT, buttons=InlineButtons.back_to(BackToEnum.ADMIN_PANEL))
+        await event.edit(SELECT, buttons=InlineButtons.SEND_PANEL)
     
     finally:
         pass

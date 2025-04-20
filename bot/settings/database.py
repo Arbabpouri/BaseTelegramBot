@@ -24,7 +24,9 @@ def default_data() -> None:
     with SessionLocal() as session:
 
         for admin in DEFAULT_ADMINS_USER_ID:
-            session.add(UserModel(user_id=admin, is_admin=True))
+            user = session.query(UserModel).filter_by(user_id=admin).first()
+            if not user:
+                session.add(UserModel(user_id=admin, is_admin=True))
             
         session.commit()
 
