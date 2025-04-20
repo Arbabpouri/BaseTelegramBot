@@ -4,6 +4,14 @@ from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
 from functions.database_functions import update_configs
 from functions.step_functions import Parts, set_step, delete_step
+from functions.filters_functions import (
+    filter_admin_move,
+    filter_set_entry_prize,
+    filter_set_help,
+    filter_set_rule,
+    filter_set_support_channel,
+    filter_set_referral_bonus,
+)
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED
 from . import client
@@ -14,7 +22,7 @@ from . import client
 # region CallBackQuery Handlers
 
 # CallbackQuery handler, show bots configs settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_CONFIGS))
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_CONFIGS, func=filter_admin_move))
 async def config_settings_panel(event: CallbackQuery.Event) -> None:
     
     try:
@@ -26,7 +34,7 @@ async def config_settings_panel(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for change entry prize
-@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_ENTERY_PRIZE))
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_ENTERY_PRIZE, func=filter_admin_move))
 async def change_entry_prize_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -39,7 +47,7 @@ async def change_entry_prize_set_step(event: CallbackQuery.Event) -> None:
     
 
 # CallbackQuery handler, set step change referral bonus set step
-@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_REFERRAL_BONUS))
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_REFERRAL_BONUS, func=filter_admin_move))
 async def remove_config_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -52,7 +60,7 @@ async def remove_config_set_step(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for change rule set step
-@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_RULES_TEXT))
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_RULES_TEXT, func=filter_admin_move))
 async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -65,7 +73,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     
 
 # CallbackQuery handler, set step for change helps set step
-@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_HELP_TEXT))
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_HELP_TEXT, func=filter_admin_move))
 async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -78,7 +86,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     
     
 # CallbackQuery handler, set step for change support channel set step
-@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_SUPPORT_CHANNEL))
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_SUPPORT_CHANNEL, func=filter_admin_move))
 async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -95,7 +103,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
 # region NewMessageHandlers
 
 # NewMessage handler, change rule
-@client.on(event=NewMessage(pattern=".*"))
+@client.on(event=NewMessage(pattern=".*", func=filter_set_rule))
 async def set_rule(event: Message) -> None:
     
     try:
@@ -109,7 +117,7 @@ async def set_rule(event: Message) -> None:
     
     
 # NewMessage handler, change help
-@client.on(event=NewMessage(pattern=".*"))
+@client.on(event=NewMessage(pattern=".*", func=filter_set_help))
 async def set_help(event: Message) -> None:
     
     try:
@@ -123,7 +131,7 @@ async def set_help(event: Message) -> None:
     
     
 # NewMessage handler, change support channel
-@client.on(event=NewMessage(pattern="^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+"))
+@client.on(event=NewMessage(pattern="^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+", func=filter_set_support_channel))
 async def set_support_channel(event: Message) -> None:
     
     try:
@@ -137,7 +145,7 @@ async def set_support_channel(event: Message) -> None:
     
     
 # NewMessage handler, change referral bonus
-@client.on(event=NewMessage(pattern="^[0-9]*"))
+@client.on(event=NewMessage(pattern="^[0-9]*", func=filter_set_referral_bonus))
 async def set_referral_bonus(event: Message) -> None:
     
     try:
@@ -151,7 +159,7 @@ async def set_referral_bonus(event: Message) -> None:
     
     
 # NewMessage handler, change entry prize
-@client.on(event=NewMessage(pattern="^[0-9]*"))
+@client.on(event=NewMessage(pattern="^[0-9]*", func=filter_set_entry_prize))
 async def set_entry_prize(event: Message) -> None:
     
     try:
