@@ -7,16 +7,24 @@ from telethon.errors import FloodWaitError
 import asyncio
 from functions.step_functions import Parts, set_step, delete_step
 from functions.database_functions import get_users, get_user
+from functions.filters_functions import (
+    filter_admin_move,
+    filter_get_message_send_user,
+    filter_get_message_send_users,
+    filter_get_user_send
+    
+)
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from settings.strings import ENTER_USER_ID, SELECT, ENTER_MESSAGE, SENDING, message_sended, USER_NOT_EXIST, NOT_SEND
 from . import client
 
 # endregion
 
+
 # region CallbackQuery Handlers
 
 # CallbackQuery handler, show send message panel
-@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_PANEL))
+@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_PANEL, func=filter_admin_move))
 async def send_panel(event: CallbackQuery.Event) -> None:
     
     try:
@@ -28,7 +36,7 @@ async def send_panel(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for send message to all users in db
-@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_TO_USERS))
+@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_TO_USERS, func=filter_admin_move))
 async def send_to_users_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -41,7 +49,7 @@ async def send_to_users_set_step(event: CallbackQuery.Event) -> None:
     
     
 # CallbackQuery handler, set step for send message to one user
-@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_TO_USER))
+@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_TO_USER, func=filter_admin_move))
 async def send_to_user_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -58,7 +66,7 @@ async def send_to_user_set_step(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage handler, set step for send message to all users in db
-@client.on(event=NewMessage(incoming=True))
+@client.on(event=NewMessage(incoming=True, func=filter_get_message_send_users))
 async def get_message_send_to_users(event: Message) -> None:
     
     try:
@@ -84,7 +92,7 @@ async def get_message_send_to_users(event: Message) -> None:
         pass
 
 
-@client.on(event=NewMessage(pattern=r"[0-9]*", incoming=True))
+@client.on(event=NewMessage(pattern=r"[0-9]*", incoming=True, func=filter_get_user_send))
 async def get_user_send_to_user(event: Message) -> None:
     
     try:
@@ -102,7 +110,7 @@ async def get_user_send_to_user(event: Message) -> None:
         pass
     
 
-@client.on(event=NewMessage(incoming=True))
+@client.on(event=NewMessage(incoming=True, func=filter_get_message_send_user))
 async def get_message_send_to_user(event: Message) -> None:
     
     try:

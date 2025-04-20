@@ -62,6 +62,26 @@ async def filter_add_channel(event) -> bool:
         await user_is_admin(event.sender_id)
     )    
 
+async def filter_get_message_send_users(event) -> bool:
+    return bool(
+        get_user_step(event.sender_id).step == Parts.SEND_TO_USERS and 
+        await user_is_admin(event.sender_id)
+    )
+
+async def filter_get_user_send(event) -> bool:
+    return bool(
+        get_user_step(event.sender_id).step == Parts.SEND_TO_USER and 
+        await user_is_admin(event.sender_id)
+    )
+    
+async def filter_get_message_send_user(event) -> bool:
+    return bool(
+        get_user_step(event.sender_id).step == Parts.GET_MESSAGE_SEND_TO_USER and 
+        await user_is_admin(event.sender_id)
+    )
+    
+
+
 async def filter_(event) -> bool:
     return bool(
         get_user_step(event.sender_id).step == Parts.DELETE_ADMIN and 
