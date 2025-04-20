@@ -1,5 +1,6 @@
-from sqlalchemy.orm import sessionmaker, DeclarativeBase, Session
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, Session, mapped_column, Mapped
 from sqlalchemy import create_engine
+from typing import Any
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./database.db"
 # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
@@ -11,9 +12,15 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Base(DeclarativeBase):
-    pass
+    id: Mapped[int] = mapped_column(primary_key=True)
 
+from models.channel_model import ChannelModel
+from models.config_model import ConfigsModel
+from models.user_model import UserModel
 
-def get_session() -> Session:
-    with Session(engine) as session:
+def get_session() -> Session | Any:
+    session = SessionLocal()
+    try:
         yield session
+    finally:
+        session.close()

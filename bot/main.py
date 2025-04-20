@@ -1,7 +1,7 @@
 import os
 import logging
 from handlers import client
-from models import default_data, create_table
+
 
 def main():
 
@@ -14,9 +14,14 @@ def main():
 
 def check_db() -> None:
 
-    if os.path.exists('database.db'):
-        create_table()
-        default_data()
+    if not os.path.exists('database.db'):
+        print('database not found')
+        from settings.database import Base, engine
+        # from models.channel_model import ChannelModel
+        # from models.config_model import ConfigsModel
+        # from models.user_model import UserModel
+        Base.metadata.create_all(bind=engine)
+        # exit(1)
 
 if __name__ == '__main__':
 
