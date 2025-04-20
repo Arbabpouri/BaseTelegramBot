@@ -4,6 +4,7 @@ from telethon.events import CallbackQuery, NewMessage
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import BACKED
+from functions.filters_functions import filter_admin_move
 from . import client
 
 # endregion
@@ -12,7 +13,7 @@ from . import client
 # region CallBackQuery Handlers
 
 # CallbackQuery handler, back to admin panel
-@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN, func=filter_admin_move))
 async def back_to_admin_panel(event: CallbackQuery.Event) -> None:
     
     try:
@@ -25,8 +26,8 @@ async def back_to_admin_panel(event: CallbackQuery.Event) -> None:
     
 
 # CallbackQuery handler, back to admin settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN))
-async def back_to_admin_panel(event: CallbackQuery.Event) -> None:
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN, func=filter_admin_move))
+async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
     
     try:
     
