@@ -14,9 +14,9 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 class Base(DeclarativeBase):
     id: Mapped[int] = mapped_column(primary_key=True)
 
-from models.channel_model import ChannelModel
-from models.config_model import ConfigsModel
-from models.user_model import UserModel
+
+from models import *    
+
 
 def get_session() -> Session | Any:
     session = SessionLocal()
