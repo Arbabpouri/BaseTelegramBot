@@ -68,6 +68,14 @@ def referral_bonus(invited_user_id: int, amount: int) -> str:
         f"💰 کاربر عزیز شما زیر مجموعه جدید گرفتید به ایدی <code>{invited_user_id}</code> و مقدار {amount:,} به شما داده شد"
     )
 
+
+def user_info(user: UserModel) -> str:
+    return (
+        f"📌 کاربر با ایدی عددی : {user.user_id}\n"
+        f"💰 موجودی : {user.balance}\n"
+        f"⛓ تعداد زیر مجموعه : {len(user.users_referrals)}"
+    )
+
 # endregion
 
 # region variable
@@ -101,5 +109,6 @@ ENTER_MESSAGE = "💎 لطفا پیام خود را ارسال کنید"
 SENDING = "📌 درحال ارسال . . ."
 CHANNEL_ALREADY_EXIST = "⚠ این کانال وجود دارد لطفا کانال دیگری را ارسال کنید"
 JOIN_TO_CHANNELS = "⚠ برای فعالیت در ربات باید عضو کانال های زیر بشوید"
+NOT_SEND = "🧶 پیام ارسال نشد, احتمالا ربات را بلاک کرده است"
 
 # endregion

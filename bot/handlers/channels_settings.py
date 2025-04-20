@@ -4,9 +4,9 @@ from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
 from telethon.tl.functions.channels import GetFullChannelRequest
 from telethon.types import Channel, PeerChannel
-from functions.database_functions import add_channel, remove_channel, get_channels, get_channel
+from functions.database_functions import add_channel, remove_channel, get_channel
 from functions.step_functions import Parts, set_step, delete_step
-from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
+from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import (
     SELECT, 
     ADD_CHANNEL, 
@@ -41,7 +41,7 @@ async def add_channel_set_step(event: CallbackQuery.Event) -> None:
     try:
     
         set_step(user_id=event.sender_id, step=Parts.ADD_CHANNEL)
-        await event.edit(ADD_CHANNEL, buttons=InlineButtons.CANCEL)
+        await event.edit(ADD_CHANNEL, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         pass

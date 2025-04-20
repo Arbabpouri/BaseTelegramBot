@@ -13,7 +13,6 @@ class Permission(BaseModel):
 
 @unique
 class Parts(IntEnum):
-    NOTHING = -1
     ADD_ADMIN = 0
     DELETE_ADMIN = 1
     SHOW_ADMINS = 2
@@ -31,11 +30,16 @@ class Parts(IntEnum):
     CHANGE_SUPPORT_CHANNEL = 14
     CHANGE_REFERRAL_BONUS = 15
     GET_MESSAGE = 16
+    GET_MESSAGE_SEND_TO_USER = 17
 
 step_limit = dict()
 
+class UserStep(BaseModel):
+    step: Parts | int
+    user_geted: int | None = None
 
-def set_step(user_id: int, step: Parts | int) -> None:
+
+def set_step(user_id: int, step: Parts | int, user_geted: int | None = None) -> None:
     pass
 
 

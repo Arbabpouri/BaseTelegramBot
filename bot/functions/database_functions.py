@@ -59,6 +59,26 @@ async def user_is_ban(user_id: int) -> bool:
     return bool(user and user.is_ban)
 
 
+# ban user
+async def ban_user(user_id: int) -> UserModel | None:
+    session = get_session()
+    user = session.query(UserModel).filter_by(user_id=int(user_id)).first()
+    if not user:
+        return None
+    user.is_ban = True
+    session.commit()
+    return user
+
+# unban user
+async def unban_user(user_id: int) -> UserModel | None:
+    session = get_session()
+    user = session.query(UserModel).filter_by(user_id=int(user_id)).first()
+    if not user:
+        return None
+    user.is_ban = False
+    session.commit()
+    return user
+
 # add bot admin, change user from manual user to admin user
 async def add_admin(user_id: int) -> UserModel | None:
     "add bot admin, change user from manual user to admin user"

@@ -1,3 +1,5 @@
+# region imports
+
 from telethon.events import CallbackQuery, NewMessage
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from buttons.text_buttons import TextButtons, TextButtonsString
@@ -5,6 +7,10 @@ from settings.strings import bot_stats, my_account
 from functions.database_functions import get_users, get_channels, get_user
 from . import client
 
+# endregion
+
+
+# region CallbackQuery Handlers
 
 # CallbackQuery handler, show bot stats
 @client.on(event=CallbackQuery(data=InlineButtonsData.BOT_STATS))
@@ -18,6 +24,10 @@ async def bot_status(event: CallbackQuery.Event) -> None:
     finally:
         pass
 
+# endregion
+
+
+# region NewMessage Handlers
 
 # NewMessage handler, show user stats
 @client.on(event=NewMessage(pattern=TextButtonsString.MY_ACCOUNT))
@@ -30,3 +40,5 @@ async def user_account_info(event: CallbackQuery.Event) -> None:
         
     finally:
         pass
+
+# endregion

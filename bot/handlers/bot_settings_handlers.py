@@ -2,7 +2,7 @@
 
 from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
-from functions.database_functions import get_config, update_configs
+from functions.database_functions import update_configs
 from functions.step_functions import Parts, set_step, delete_step
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED
@@ -32,7 +32,7 @@ async def change_entry_prize_set_step(event: CallbackQuery.Event) -> None:
     try:
     
         set_step(user_id=event.sender_id, step=Parts.CHANGE_ENTERY_PRIZE)
-        await event.edit(ENTER_NUMBER, buttons=InlineButtons.CANCEL)
+        await event.edit(ENTER_NUMBER, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         pass
@@ -45,7 +45,7 @@ async def remove_config_set_step(event: CallbackQuery.Event) -> None:
     try:
     
         set_step(user_id=event.sender_id, step=Parts.CHANGE_REFERRAL_BONUS)
-        await event.edit(ENTER_NUMBER, buttons=InlineButtons.CANCEL)
+        await event.edit(ENTER_NUMBER, buttons=InlineButtons.CANCEL_ADMIN)
         
     finally:
         pass
@@ -58,7 +58,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     try:
     
         set_step(user_id=event.sender_id, step=Parts.CHANGE_RULES_TEXT)
-        await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL)
+        await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         pass
@@ -71,7 +71,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     try:
     
         set_step(user_id=event.sender_id, step=Parts.CHANGE_HELP_TEXT)
-        await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL)
+        await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         pass
@@ -84,7 +84,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     try:
     
         set_step(user_id=event.sender_id, step=Parts.CHANGE_SUPPORT_CHANNEL)
-        await event.edit(ENTER_URL, buttons=InlineButtons.CANCEL)
+        await event.edit(ENTER_URL, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         pass

@@ -1,3 +1,5 @@
+# region imports
+
 from telethon.events import CallbackQuery, NewMessage
 from buttons.text_buttons import TextButtons, TextButtonsString
 from buttons.url_buttons import UrlButtons
@@ -7,7 +9,10 @@ from settings.strings import START_MENU, CONTACT_US, SELECT, referral_reply, ref
 from settings.config import REFERRAL_IMAGE_ADDRESS
 from . import client
 
+# endregion
 
+
+# region NewMessage Handlers
 
 # NewMessage handler, open start menu
 @client.on(event=NewMessage(pattern=f"^{Commands.START}"))
@@ -81,4 +86,5 @@ async def referral(event: CallbackQuery.Event) -> None:
 
     finally:
         pass
-    
+
+# endregion

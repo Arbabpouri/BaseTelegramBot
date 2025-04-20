@@ -2,11 +2,10 @@
 
 from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
-from functions.database_functions import add_admin, remove_admin, user_is_admin, get_admins, get_user
+from functions.database_functions import add_admin, remove_admin, get_admins
 from functions.step_functions import Parts, set_step, delete_step
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from buttons.commands import Commands
-from buttons.text_buttons import TextButtonsString, TextButtons
 from settings.strings import (
     show_admins as string_show_admins, 
     ENTER_USER_ID, 
