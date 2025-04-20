@@ -168,7 +168,7 @@ async def set_support_channel(event: Message) -> None:
     
     
 # NewMessage handler, change referral bonus
-@client.on(event=NewMessage(pattern="^[0-9]*", func=filter_set_referral_bonus))
+@client.on(event=NewMessage(pattern=r"^[0-9]*$", func=filter_set_referral_bonus))
 async def set_referral_bonus(event: Message) -> None:
     
     try:
@@ -190,7 +190,7 @@ async def set_referral_bonus(event: Message) -> None:
     
     
 # NewMessage handler, change entry prize
-@client.on(event=NewMessage(pattern="^[0-9]*", func=filter_set_entry_prize))
+@client.on(event=NewMessage(pattern=r"^[0-9]*$", func=filter_set_entry_prize))
 async def set_entry_prize(event: Message) -> None:
     
     try:

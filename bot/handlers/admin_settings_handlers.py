@@ -43,7 +43,7 @@ async def show_admins(event: CallbackQuery.Event) -> None:
         
         with SessionLocal() as session:
             admins = session.query(UserModel).filter_by(is_admin=True).all()
-            await event.edit(string_show_admins(admins=admins), buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING))
+            await event.edit(string_show_admins(admins=admins), buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING), parse_mode='html')
         
     finally:
         raise StopPropagation
@@ -57,6 +57,8 @@ async def add_admin_set_step(event: CallbackQuery.Event) -> None:
     
         set_step(user_id=event.sender_id, step=Parts.ADD_ADMIN)
         await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
+    except Exception as e:
+        print(e)
     
     finally:
         raise StopPropagation
@@ -93,11 +95,10 @@ async def open_admin_panel(event: Message) -> None:
 
 
 # NewMessage handler, get admin user id and add to db
-@client.on(event=NewMessage(incoming=True, pattern=r"[0-9]*", func=filter_add_admin))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_add_admin))
 async def new_admin(event: Message) -> None:
     
     try:
-        
         user = int(event.message.message)
         with SessionLocal() as session:
             user = session.query(UserModel).filter_by(user_id=user).first()
@@ -110,6 +111,9 @@ async def new_admin(event: Message) -> None:
                 return
             
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
+    
+    except Exception as e:
+        print(e)
         
     finally:
         
@@ -117,7 +121,7 @@ async def new_admin(event: Message) -> None:
 
 
 # NewMessage handler, get admin user id and check in db? and remove from db
-@client.on(event=NewMessage(incoming=True, pattern=r"[0-9]*", func=filter_del_admin))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_del_admin))
 async def delete_admin(event: Message) -> None:
     try:
         user = int(event.message.message)

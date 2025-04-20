@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from enum import unique, IntEnum
 from typing import Any
 import redis
 
@@ -12,8 +11,7 @@ class Permission(BaseModel):
     WITHDRAW_CODE: str | None = None
 
 
-@unique
-class Parts(IntEnum):
+class Parts:
     ADD_ADMIN = 0
     DELETE_ADMIN = 1
     SHOW_ADMINS = 2
@@ -37,17 +35,17 @@ redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
 
 
 class UserStep(BaseModel):
-    step: Parts | int
+    step: int
     user_geted: int | None = None
 
 
-def set_step(user_id: int, step: Parts | int, user_geted: int | None = None) -> None:
+def set_step(user_id: int, step: int, user_geted: int | None = None) -> None:
     data = {
         'step': step,
     }
     if user_geted:
-        data['user_geted': user_geted]
-    redis_client.hmset(user_id, data)
+        data['user_geted'] = user_geted
+    redis_client.hset(user_id, mapping=data)
 
 
 def delete_step(user_id: int) -> None:
@@ -56,5 +54,6 @@ def delete_step(user_id: int) -> None:
 
 def get_user_step(user_id: int) -> UserStep | None:
     if data := redis_client.hgetall(user_id):
+        data = {key.decode('utf-8'): value.decode('utf-8') for key, value in data.items()}
         return UserStep(**data)
     return None
