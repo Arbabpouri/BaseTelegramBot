@@ -56,6 +56,12 @@ async def filter_set_entry_prize(event) -> bool:
         await user_is_admin(event.sender_id)
     )
     
+async def filter_add_channel(event) -> bool:
+    return bool(
+        get_user_step(event.sender_id).step == Parts.ADD_CHANNEL and 
+        await user_is_admin(event.sender_id)
+    )    
+
 async def filter_(event) -> bool:
     return bool(
         get_user_step(event.sender_id).step == Parts.DELETE_ADMIN and 

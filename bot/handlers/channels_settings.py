@@ -1,4 +1,4 @@
-# reion imports
+# region imports
 
 from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
@@ -16,14 +16,16 @@ from settings.strings import (
     CHANNEL_ALREADY_EXIST,
     BOT_NOT_ADMIN
 )
+from functions.filters_functions import filter_admin_move, filter_add_channel
 from . import client
 
 # endregion
 
+
 # region CallBackQuery Handlers
 
 # CallbackQuery handler, show bots channels settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.CHANNEL_PANEL))
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANNEL_PANEL, func=filter_admin_move))
 async def channels_panel(event: CallbackQuery.Event) -> None:
     
     try:
@@ -35,7 +37,7 @@ async def channels_panel(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for add channels
-@client.on(event=CallbackQuery(data=InlineButtonsData.ADD_CHANNEL))
+@client.on(event=CallbackQuery(data=InlineButtonsData.ADD_CHANNEL, func=filter_admin_move))
 async def add_channel_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -48,7 +50,7 @@ async def add_channel_set_step(event: CallbackQuery.Event) -> None:
     
     
 # CallBack handler, get channels user id and check in db? and remove from db
-@client.on(event=CallbackQuery(pattern=f"^b{InlineButtonsData.DELETE_CHANNEL}"))
+@client.on(event=CallbackQuery(pattern=f"^b{InlineButtonsData.DELETE_CHANNEL}", func=filter_admin_move))
 async def delete_channel(event: Message) -> None:
     
     try:
@@ -70,7 +72,7 @@ async def delete_channel(event: Message) -> None:
 
 
 # NewMessage handler, get channels user id and add to db
-@client.on(event=NewMessage(forwards=True, incoming=True))
+@client.on(event=NewMessage(forwards=True, incoming=True, func=filter_add_channel))
 async def new_channel(event: Message) -> None:
     
     try:
