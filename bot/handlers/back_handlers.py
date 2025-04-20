@@ -5,7 +5,7 @@ from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import BACKED
 from functions.filters_functions import filter_admin_move
-from . import client
+from settings.client import client
 
 # endregion
 

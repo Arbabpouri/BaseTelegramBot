@@ -15,7 +15,7 @@ from settings.strings import (
     USER_NOT_EXIST,
     ADDED
 )
-from . import client
+from settings.client import client
 
 # endregion
 

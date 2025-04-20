@@ -1,7 +1,7 @@
 import os
 import logging
-import handlers
-
+from settings.database import create_tables, default_data
+from handlers import *
 
 def main():
 
@@ -9,14 +9,16 @@ def main():
     logger = logging.getLogger(__name__)
 
     print("Bot Runned")
-    handlers.client.run_until_disconnected()
+    client.run_until_disconnected()
 
 
 def check_db() -> None:
 
     if not os.path.exists('database.db'):
         print('database not found')
-        exit(1)
+        create_tables()
+    default_data()
+        
 
 if __name__ == '__main__':
 
@@ -24,4 +26,4 @@ if __name__ == '__main__':
         check_db()
         main()
     except Exception as e:
-        print("Error in run boot :", e)
+        print("Error in run bot :", e)

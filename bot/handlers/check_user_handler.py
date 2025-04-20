@@ -4,7 +4,7 @@ from functions.database_functions import add_channel, remove_channel, get_channe
 from functions.step_functions import Parts, set_step, delete_step
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from settings.strings import ENTER_USER_ID, SELECT, ENTER_MESSAGE
-from . import client
+from settings.client import client
 
 
 # CallbackQuery handler, show send message panel

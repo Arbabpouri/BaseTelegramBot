@@ -14,7 +14,7 @@ from functions.filters_functions import (
 )
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED, ERROR
-from . import client
+from settings.client import client
 
 # endregion
 

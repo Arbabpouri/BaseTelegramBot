@@ -17,7 +17,7 @@ from settings.strings import (
     BOT_NOT_ADMIN
 )
 from functions.filters_functions import filter_admin_move, filter_add_channel
-from . import client
+from settings.client import client
 
 # endregion
 

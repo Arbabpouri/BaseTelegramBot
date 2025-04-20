@@ -6,7 +6,7 @@ from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import bot_stats, my_account
 from functions.database_functions import get_users, get_channels, get_user
 from functions.filters_functions import filter_user_move, filter_admin_move
-from . import client
+from settings.client import client
 
 # endregion
 

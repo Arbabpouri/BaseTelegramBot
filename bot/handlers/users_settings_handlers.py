@@ -7,7 +7,7 @@ from functions.step_functions import Parts, set_step, delete_step
 from functions.filters_functions import filter_admin_move, filter_ban_user, filter_unban_user, filter_user_info
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import ENTER_USER_ID, SELECT, UPDATED, USER_NOT_EXIST, user_info as user_info_str
-from . import client
+from settings.client import client
 
 # endregion
 

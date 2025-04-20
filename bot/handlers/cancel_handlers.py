@@ -5,7 +5,7 @@ from functions.step_functions import delete_step
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons
 from settings.strings import CANCELED, ERROR
-from . import client
+from settings.client import client
 
 # endregion
 

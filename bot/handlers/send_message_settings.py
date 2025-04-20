@@ -16,7 +16,7 @@ from functions.filters_functions import (
 )
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from settings.strings import ENTER_USER_ID, SELECT, ENTER_MESSAGE, SENDING, message_sended, USER_NOT_EXIST, NOT_SEND
-from . import client
+from settings.client import client
 
 # endregion
 

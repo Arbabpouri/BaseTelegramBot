@@ -8,7 +8,7 @@ from functions.database_functions import get_config, get_user
 from functions.filters_functions import filter_user_move
 from settings.strings import START_MENU, CONTACT_US, SELECT, referral_reply, referral_banner
 from settings.config import REFERRAL_IMAGE_ADDRESS
-from . import client
+from settings.client import client
 
 # endregion
 

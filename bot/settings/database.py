@@ -1,6 +1,7 @@
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, Session, mapped_column, Mapped
+from contextlib import contextmanager
 from sqlalchemy import create_engine
-from typing import Any
+from settings.config import DEFAULT_ADMINS_USER_ID
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./database.db"
 # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
@@ -18,9 +19,14 @@ class Base(DeclarativeBase):
 from models import *    
 
 
-def get_session() -> Session | Any:
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
+def default_data() -> None:
+
+    with SessionLocal() as session:
+
+        for admin in DEFAULT_ADMINS_USER_ID:
+            session.add(UserModel(user_id=admin, is_admin=True))
+            
+        session.commit()
+
+def create_tables() -> None:
+    Base.metadata.create_all(engine)
