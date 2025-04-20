@@ -59,7 +59,7 @@ class InlineButtonString:
     CHANGE_RULES_TEXT = "⚙️| تغییر متن قوانین"
     CHANGE_HELP_TEXT = "⚙️| تغییر متن راهنما"
     CHANGE_ENTERY_PRIZE = "⚙️| تغییر هدیه استارت"
-    CHANGE_TRUST_CHANNEL = "⚙️| تغییر کانال اعتماد"
+    CHANGE_SUPPORT_CHANNEL = "⚙️| تغییر کانال اعتماد"
     CHANGE_REFERRAL_BONUS = "⚙️| تغییر هزینه زیرمجموعه"
     JOINED_IN_CHANNEL = "تایید عضویت ✅"
     BACK = "📍 | بازگشت"
@@ -197,7 +197,7 @@ class InlineButtons:
             Button.inline(text=InlineButtonString.CHANGE_REFERRAL_BONUS, data=InlineButtonsData.CHANGE_REFERRAL_BONUS),
         ),
         (
-            Button.inline(text=InlineButtonString.CHANGE_TRUST_CHANNEL, data=InlineButtonsData.CHANGE_TRUST_CHANNEL),
+            Button.inline(text=InlineButtonString.CHANGE_SUPPORT_CHANNEL, data=InlineButtonsData.CHANGE_SUPPORT_CHANNEL),
         ),
         (
             back_to(back_to=BackToEnum.ADMIN_PANEL),

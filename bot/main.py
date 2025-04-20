@@ -1,6 +1,6 @@
 import os
 import logging
-from handlers import client
+import handlers
 
 
 def main():
@@ -9,7 +9,7 @@ def main():
     logger = logging.getLogger(__name__)
 
     print("Bot Runned")
-    client.run_until_disconnected()
+    handlers.client.run_until_disconnected()
 
 
 def check_db() -> None:

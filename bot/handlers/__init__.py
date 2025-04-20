@@ -9,8 +9,13 @@ client = TelegramClient(
 ).start(bot_token=BOT_TOKEN)
 
 
-# from .admin_settings_handlers import *
-# from .send_message_settings import *
-# from .channels_settings import *
-# from .back_handlers import *
-from handlers import *
+from .admin_settings_handlers import *
+from .back_handlers import *
+from .bot_settings_handlers import *
+from .bot_stats_handlers import *
+from .cancel_handlers import *
+from .channels_settings import *
+from .check_user_handler import *
+from .send_message_settings import *
+from .start_menu_handlers import *
+from .users_settings_handlers import *

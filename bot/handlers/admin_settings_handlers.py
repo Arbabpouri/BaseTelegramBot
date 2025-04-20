@@ -4,7 +4,7 @@ from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from functions.database_functions import add_admin, remove_admin, get_admins
 from functions.step_functions import Parts, set_step, delete_step
-from bot.functions.filters_functions import filter_admin_move, filter_add_admin, filter_del_admin
+from functions.filters_functions import filter_admin_move, filter_add_admin, filter_del_admin
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from buttons.commands import Commands
 from settings.strings import (

@@ -139,7 +139,7 @@ async def set_help(event: Message) -> None:
     
     
 # NewMessage handler, change support channel
-@client.on(event=NewMessage(pattern="^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+", func=filter_set_support_channel))
+@client.on(event=NewMessage(pattern=r"^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+", func=filter_set_support_channel))
 async def set_support_channel(event: Message) -> None:
     
     try:
