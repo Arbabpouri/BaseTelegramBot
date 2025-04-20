@@ -1,6 +1,5 @@
 from telethon import Button
 from enum import IntEnum
-from functions.database_functions import get_channels
 from models import ChannelModel
 
 
@@ -77,12 +76,10 @@ class InlineButtons:
     
     
     @staticmethod
-    async def channels_panel(channsles: list[ChannelModel]):
+    async def channels_panel(channels: list[ChannelModel]):
         
         buttons = []
         
-        channels = await get_channels()
-
         for channel in channels:
             buttons.append(
                 (

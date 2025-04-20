@@ -84,7 +84,7 @@ async def referral(event: CallbackQuery.Event) -> None:
     
         with SessionLocal() as session:
             configs = session.query(ConfigsModel).first()
-            user = session.query(UserModel).filter_by(user_id=event.sender_id)
+            user = session.query(UserModel).filter_by(user_id=event.sender_id).first()
             message = await client.send_file(entity=event.chat_id, file=REFERRAL_IMAGE_ADDRESS, caption=referral_banner(event.sender_id, configs))
             await client.send_message(entity=event.chat_id, message=referral_reply(user, configs), buttons=TextButtons.DEPOSIT_PLAN, reply_to=message)
     except Exception as e:

@@ -1,7 +1,7 @@
 from telethon import Button
 from buttons.inline_buttons import InlineButtons
-from functions.database_functions import get_config, get_channels
 from settings.config import SUPPORT_USERNAME
+from settings.database import ChannelModel
 
 
 
@@ -30,10 +30,8 @@ class UrlButtons:
     
 
     @staticmethod
-    async def channels_locked(invited_user_id: int | None = None):
-        
-        channels = await get_channels()
-        
+    async def channels_locked(channels: list[ChannelModel], invited_user_id: int | None = None):
+                
         buttons = []
 
         for channel in channels:

@@ -31,7 +31,7 @@ async def channels_panel(event: CallbackQuery.Event) -> None:
     try:
         with SessionLocal() as session:
             channels = session.query(ChannelModel).all()
-            await event.edit(SELECT, buttons=await InlineButtons.channels_panel(channsles=channels))
+            await event.edit(SELECT, buttons=await InlineButtons.channels_panel(channels=channels))
     
     finally:
         raise StopPropagation
@@ -65,7 +65,7 @@ async def delete_channel(event: Message) -> None:
                 await event.edit(DELETED, buttons=await InlineButtons.channels_panel())
             else:
                 channels = session.query(ChannelModel).all()
-                await event.edit(ERROR, buttons=await InlineButtons.channels_panel(channsles=channels))
+                await event.edit(ERROR, buttons=await InlineButtons.channels_panel(channels=channels))
         
     finally:
         raise StopPropagation
