@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from enum import unique, IntEnum
 from typing import Any
+import redis
 
 
 class Permission(BaseModel):
@@ -32,7 +33,8 @@ class Parts(IntEnum):
     GET_MESSAGE = 16
     GET_MESSAGE_SEND_TO_USER = 17
 
-step_limit = dict()
+redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
+
 
 class UserStep(BaseModel):
     step: Parts | int
@@ -40,8 +42,19 @@ class UserStep(BaseModel):
 
 
 def set_step(user_id: int, step: Parts | int, user_geted: int | None = None) -> None:
-    pass
+    data = {
+        'step': step,
+    }
+    if user_geted:
+        data['user_geted': user_geted]
+    redis_client.hmset(user_id, data)
 
 
 def delete_step(user_id: int) -> None:
-    pass
+    redis_client.delete(user_id)
+
+
+def get_user_step(user_id: int) -> UserStep | None:
+    if data := redis_client.hgetall(user_id):
+        return UserStep(**data)
+    return None

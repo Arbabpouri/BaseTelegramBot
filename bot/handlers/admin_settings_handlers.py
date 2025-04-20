@@ -4,6 +4,7 @@ from telethon.events import NewMessage, CallbackQuery
 from telethon.custom import Message
 from functions.database_functions import add_admin, remove_admin, get_admins
 from functions.step_functions import Parts, set_step, delete_step
+from bot.functions.filters_functions import filter_admin_move, filter_add_admin, filter_del_admin
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
 from buttons.commands import Commands
 from settings.strings import (
@@ -22,7 +23,7 @@ from . import client
 # region CallBackQuery Handlers
 
 # CallbackQuery handler, show bots admins settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.ADMIN_SETTING_PANEL))
+@client.on(event=CallbackQuery(data=InlineButtonsData.ADMIN_SETTING_PANEL, func=filter_admin_move))
 async def admin_settings_panel(event: CallbackQuery.Event) -> None:
     
     try:
@@ -34,7 +35,7 @@ async def admin_settings_panel(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, show bots admins
-@client.on(event=CallbackQuery(data=InlineButtonsData.SHOW_ADMINS))
+@client.on(event=CallbackQuery(data=InlineButtonsData.SHOW_ADMINS, func=filter_admin_move))
 async def show_admins(event: CallbackQuery.Event) -> None:
     
     try:
@@ -46,7 +47,7 @@ async def show_admins(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for add admin
-@client.on(event=CallbackQuery(data=InlineButtonsData.ADD_ADMIN))
+@client.on(event=CallbackQuery(data=InlineButtonsData.ADD_ADMIN, func=filter_admin_move))
 async def add_admin_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -59,7 +60,7 @@ async def add_admin_set_step(event: CallbackQuery.Event) -> None:
     
 
 # CallbackQuery handler, set step for remove admin
-@client.on(event=CallbackQuery(data=InlineButtonsData.DELETE_ADMIN))
+@client.on(event=CallbackQuery(data=InlineButtonsData.DELETE_ADMIN, func=filter_admin_move))
 async def remove_admin_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -78,7 +79,7 @@ async def remove_admin_set_step(event: CallbackQuery.Event) -> None:
 
 
 # NewMessage handler, open panel admin
-@client.on(event=NewMessage(incoming=True, pattern=Commands.ADMIN))
+@client.on(event=NewMessage(incoming=True, pattern=Commands.ADMIN, func=filter_admin_move))
 async def open_admin_panel(event: Message) -> None:
     try:
         
@@ -89,7 +90,7 @@ async def open_admin_panel(event: Message) -> None:
 
 
 # NewMessage handler, get admin user id and add to db
-@client.on(event=NewMessage(incoming=True, pattern="[0-9]*"))
+@client.on(event=NewMessage(incoming=True, pattern=r"[0-9]*", func=filter_add_admin))
 async def new_admin(event: Message) -> None:
     
     try:
@@ -107,7 +108,7 @@ async def new_admin(event: Message) -> None:
 
 
 # NewMessage handler, get admin user id and check in db? and remove from db
-@client.on(event=NewMessage(incoming=True))
+@client.on(event=NewMessage(incoming=True, pattern=r"[0-9]*", func=filter_del_admin))
 async def delete_admin(event: Message) -> None:
     try:
         user = int(event.message.message)
