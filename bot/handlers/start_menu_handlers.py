@@ -5,6 +5,7 @@ from buttons.text_buttons import TextButtons, TextButtonsString
 from buttons.url_buttons import UrlButtons
 from buttons.commands import Commands
 from functions.database_functions import get_config, get_user
+from functions.filters_functions import filter_user_move
 from settings.strings import START_MENU, CONTACT_US, SELECT, referral_reply, referral_banner
 from settings.config import REFERRAL_IMAGE_ADDRESS
 from . import client
@@ -15,7 +16,7 @@ from . import client
 # region NewMessage Handlers
 
 # NewMessage handler, open start menu
-@client.on(event=NewMessage(pattern=f"^{Commands.START}"))
+@client.on(event=NewMessage(pattern=f"^{Commands.START}", func=filter_user_move))
 async def start_menu(event: CallbackQuery.Event) -> None:
     
     try:
@@ -27,7 +28,7 @@ async def start_menu(event: CallbackQuery.Event) -> None:
 
 
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=TextButtonsString.RULES))
+@client.on(event=NewMessage(pattern=TextButtonsString.RULES, func=filter_user_move))
 async def rules(event: CallbackQuery.Event) -> None:
     
     try:
@@ -39,7 +40,7 @@ async def rules(event: CallbackQuery.Event) -> None:
     
     
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=TextButtonsString))
+@client.on(event=NewMessage(pattern=TextButtonsString, func=filter_user_move))
 async def help(event: CallbackQuery.Event) -> None:
     
     try:
@@ -51,7 +52,7 @@ async def help(event: CallbackQuery.Event) -> None:
     
 
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=TextButtonsString))
+@client.on(event=NewMessage(pattern=TextButtonsString, func=filter_user_move))
 async def contact_us(event: CallbackQuery.Event) -> None:
     
     try:
@@ -62,7 +63,7 @@ async def contact_us(event: CallbackQuery.Event) -> None:
     
     
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=TextButtonsString))
+@client.on(event=NewMessage(pattern=TextButtonsString, func=filter_user_move))
 async def deposit(event: CallbackQuery.Event) -> None:
     
     try:
@@ -74,7 +75,7 @@ async def deposit(event: CallbackQuery.Event) -> None:
     
     
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=TextButtonsString.REFERRAL))
+@client.on(event=NewMessage(pattern=TextButtonsString.REFERRAL, func=filter_user_move))
 async def referral(event: CallbackQuery.Event) -> None:
     
     try:
