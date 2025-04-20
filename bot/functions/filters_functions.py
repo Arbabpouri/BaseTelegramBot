@@ -1,11 +1,19 @@
 # region imports
 
-from functions.database_functions import user_is_admin
+from models import UserModel
+from settings.database import SessionLocal
 from functions.step_functions import get_user_step, Parts
 
 
 # endregion
 
+
+async def user_is_admin(user_id: int) -> bool:
+    
+    with SessionLocal() as session:
+        return bool(session.query(UserModel).filter_by(user_id=int(user_id), is_admin=True).first())
+    
+    
 # region rules
 
 async def filter_user_move(event) -> bool:

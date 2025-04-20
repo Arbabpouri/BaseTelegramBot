@@ -1,6 +1,7 @@
 from telethon import Button
 from enum import IntEnum
 from functions.database_functions import get_channels
+from models import ChannelModel
 
 
 # All Inline Button Data
@@ -76,7 +77,7 @@ class InlineButtons:
     
     
     @staticmethod
-    async def channels_panel():
+    async def channels_panel(channsles: list[ChannelModel]):
         
         buttons = []
         

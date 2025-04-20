@@ -2,7 +2,6 @@
 
 from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
-from functions.database_functions import update_configs
 from functions.step_functions import Parts, set_step, delete_step
 from functions.filters_functions import (
     filter_admin_move,
@@ -12,9 +11,10 @@ from functions.filters_functions import (
     filter_set_support_channel,
     filter_set_referral_bonus,
 )
-from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
+from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED, ERROR
 from settings.client import client
+from settings.database import SessionLocal, ConfigsModel
 
 # endregion
 
@@ -107,8 +107,12 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
 async def set_rule(event: Message) -> None:
     
     try:
-    
-        update_configs(rules_text=str(event.message.message))
+        
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.rules_text = str(event.message.message)
+            session.commit()
+            
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
     except:
@@ -126,7 +130,11 @@ async def set_help(event: Message) -> None:
     
     try:
     
-        update_configs(help_text=str(event.message.message))
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.help_text = str(event.message.message)
+            session.commit()
+            
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
     except:
@@ -144,7 +152,10 @@ async def set_support_channel(event: Message) -> None:
     
     try:
     
-        update_configs(support_channel_url=str(event.message.message))
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.support_channel_url = str(event.message.message)
+            session.commit()
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
     except:
@@ -162,7 +173,11 @@ async def set_referral_bonus(event: Message) -> None:
     
     try:
     
-        update_configs(referral_bonus=int(event.message.message))
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.referral_bonus = int(event.message.message)
+            session.commit()
+            
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
     except:
@@ -180,7 +195,11 @@ async def set_entry_prize(event: Message) -> None:
     
     try:
     
-        update_configs(entry_prize=int(event.message.message))
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.entry_prize = int(event.message.message)
+            session.commit()
+            
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
     
     except:

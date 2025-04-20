@@ -2,7 +2,7 @@
 
 from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
-from functions.database_functions import add_admin, remove_admin, get_admins
+from settings.database import SessionLocal, UserModel
 from functions.step_functions import Parts, set_step, delete_step
 from functions.filters_functions import filter_admin_move, filter_add_admin, filter_del_admin
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
@@ -13,7 +13,8 @@ from settings.strings import (
     SELECT, 
     ADMIN_PANEL,
     USER_NOT_EXIST,
-    ADDED
+    ADDED,
+    DELETED,
 )
 from settings.client import client
 
@@ -39,8 +40,10 @@ async def admin_settings_panel(event: CallbackQuery.Event) -> None:
 async def show_admins(event: CallbackQuery.Event) -> None:
     
     try:
-    
-        await event.edit(string_show_admins(admins=await get_admins()), buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING))
+        
+        with SessionLocal() as session:
+            admins = session.query(UserModel).filter_by(is_admin=True).all()
+            await event.edit(string_show_admins(admins=admins), buttons=InlineButtons.back_to(BackToEnum.ADMIN_SETTING))
         
     finally:
         raise StopPropagation
@@ -96,13 +99,18 @@ async def new_admin(event: Message) -> None:
     try:
         
         user = int(event.message.message)
-        add = add_admin(user_id=user)
-        if not add:
+        with SessionLocal() as session:
+            user = session.query(UserModel).filter_by(user_id=user).first()
+
+            if user:
+                user.is_admin = True
+                delete_step(user_id=event.sender_id)
+                await event.reply(ADDED, buttons=InlineButtons.ADMIN_SETTING)
+                session.commit()
+                return
+            
             await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
-            return None
-        delete_step(user_id=event.sender_id)
-        await event.reply(ADDED, buttons=InlineButtons.ADMIN_SETTING)
-    
+        
     finally:
         
         raise StopPropagation
@@ -113,13 +121,18 @@ async def new_admin(event: Message) -> None:
 async def delete_admin(event: Message) -> None:
     try:
         user = int(event.message.message)
-        add = remove_admin(user_id=user)
-        if not add:
-            await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
-            return None
-        
-        delete_step(user_id=event.sender_id)
-        await event.reply(ADDED, buttons=InlineButtons.ADMIN_SETTING)
+        with SessionLocal() as session:
+            user = session.query(UserModel).filter_by(user_id=user).first()
+
+            if user:
+                user.is_admin = False
+                delete_step(user_id=event.sender_id)
+                await event.reply(DELETED, buttons=InlineButtons.ADMIN_SETTING)
+                session.commit()
+                return
+            
+            await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)        
+       
     
     finally:
         raise StopPropagation

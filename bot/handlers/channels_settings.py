@@ -4,7 +4,6 @@ from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from telethon.tl.functions.channels import GetFullChannelRequest
 from telethon.types import Channel, PeerChannel
-from functions.database_functions import add_channel, remove_channel, get_channel
 from functions.step_functions import Parts, set_step, delete_step
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import (
@@ -18,6 +17,7 @@ from settings.strings import (
 )
 from functions.filters_functions import filter_admin_move, filter_add_channel
 from settings.client import client
+from settings.database import SessionLocal, ChannelModel
 
 # endregion
 
@@ -29,8 +29,9 @@ from settings.client import client
 async def channels_panel(event: CallbackQuery.Event) -> None:
     
     try:
-    
-        await event.edit(SELECT, buttons=await InlineButtons.channels_panel())
+        with SessionLocal() as session:
+            channels = session.query(ChannelModel).all()
+            await event.edit(SELECT, buttons=await InlineButtons.channels_panel(channsles=channels))
     
     finally:
         raise StopPropagation
@@ -56,10 +57,15 @@ async def delete_channel(event: Message) -> None:
     try:
         
         channel_id = int(str(event.data.decode()).replace(InlineButtonsData.DELETE_CHANNEL, ''))
-        if await remove_channel(channel_id=channel_id):
-            await event.edit(DELETED, buttons=await InlineButtons.channels_panel())
-        else:
-            await event.edit(ERROR, buttons=await InlineButtons.channels_panel())
+        with SessionLocal() as session:
+            channel = session.query(ChannelModel).filter_by(channel_id=channel_id).first()
+            if channel:
+                session.delete(channel)
+                session.commit()
+                await event.edit(DELETED, buttons=await InlineButtons.channels_panel())
+            else:
+                channels = session.query(ChannelModel).all()
+                await event.edit(ERROR, buttons=await InlineButtons.channels_panel(channsles=channels))
         
     finally:
         raise StopPropagation
@@ -86,26 +92,28 @@ async def new_channel(event: Message) -> None:
             await event.reply(BOT_NOT_ADMIN, buttons=InlineButtons.CANCEL_ADMIN)
             return
         
-        check_channel = get_channel(channel_id=channel.id)
+        
+        with SessionLocal() as session:
+            check_channel = session.query(ChannelModel).filter_by(channel_id=channel.id).first()
 
-        if not check_channel:
-            channel_info = await client(GetFullChannelRequest(PeerChannel(int(check_channel.id))))
-            add = add_channel(
-                channel_id=channel.id,
-                channel_name=channel.title,
-                channel_url=channel_info.full_chat.exported_invite.link
-            )
+            if not check_channel:
+                
+                channel_info = await client(GetFullChannelRequest(PeerChannel(int(check_channel.id))))
+                channel_add = ChannelModel(
+                    channel_id=channel.id,
+                    channel_name=channel.title,
+                    channel_url=channel_info.full_chat.exported_invite.link
+                )
             
-            if not add:
-                await event.reply(ERROR, buttons=await InlineButtons.channels_panel())
+                session.add(channel_add)
+                session.commit()
+                
                 delete_step(user_id=event.sender_id)
-            
-            else:
-                await event.reply(ADDED, buttons=await InlineButtons.channels_panel())
-                delete_step(user_id=event.sender_id)
+                channels = session.query(ChannelModel).all()
+                await event.reply(ADDED, buttons=await InlineButtons.channels_panel(channeles=channels))
     
-        else:
-            await event.reply(CHANNEL_ALREADY_EXIST)
+            else:
+                await event.reply(CHANNEL_ALREADY_EXIST)
     
     except Exception as e:
         await event.reply(f"{ADD_CHANNEL}\n\n{ERROR} : \n{e}", buttons=InlineButtons.CANCEL_ADMIN)

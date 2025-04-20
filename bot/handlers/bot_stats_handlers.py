@@ -4,9 +4,9 @@ from telethon.events import CallbackQuery, NewMessage, StopPropagation
 from buttons.inline_buttons import InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import bot_stats, my_account
-from functions.database_functions import get_users, get_channels, get_user
 from functions.filters_functions import filter_user_move, filter_admin_move
 from settings.client import client
+from settings.database import SessionLocal, UserModel, ChannelModel
 
 # endregion
 
@@ -18,9 +18,12 @@ from settings.client import client
 async def bot_status(event: CallbackQuery.Event) -> None:
     
     try:
-        users_num = len(await get_users())
-        channels_num = len(await get_channels())
-        await event.answer(bot_stats(users=users_num, channels=channels_num))
+        
+        with SessionLocal() as session:
+            users_num = session.query(UserModel).count()
+            channels_num = session.query(ChannelModel).count()
+            
+            await event.answer(bot_stats(users=users_num, channels=channels_num))
         
     finally:
         raise StopPropagation
@@ -36,8 +39,9 @@ async def user_account_info(event: CallbackQuery.Event) -> None:
     
     try:
         
-        user = await get_user(event.sender_id)
-        await event.reply(my_account(user=user), buttons=TextButtons.START_MENU)
+        with SessionLocal() as session:
+            user = session.query(UserModel).filter_by(user_id=event.sender_id).first()
+            await event.reply(my_account(user=user), buttons=TextButtons.START_MENU, parse_mode='html')
         
     finally:
         raise StopPropagation

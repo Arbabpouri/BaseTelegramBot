@@ -5,8 +5,7 @@ from telethon.custom import Message
 from telethon.types import PeerUser
 from telethon.errors import FloodWaitError
 import asyncio
-from functions.step_functions import Parts, set_step, delete_step
-from functions.database_functions import get_users, get_user
+from functions.step_functions import Parts, set_step, delete_step, get_user_step
 from functions.filters_functions import (
     filter_admin_move,
     filter_get_message_send_user,
@@ -14,9 +13,10 @@ from functions.filters_functions import (
     filter_get_user_send
     
 )
-from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
+from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import ENTER_USER_ID, SELECT, ENTER_MESSAGE, SENDING, message_sended, USER_NOT_EXIST, NOT_SEND
 from settings.client import client
+from settings.database import SessionLocal, UserModel
 
 # endregion
 
@@ -76,15 +76,19 @@ async def get_message_send_to_users(event: Message) -> None:
         
         success = 0
         
-        for user in await get_users():
-            try:
-                await client.send_message(PeerUser(user.user_id), message=event.message)
-                success += 1
-                await asyncio.sleep(0.1)
-            except FloodWaitError as e:
-                await asyncio.sleep(e.seconds + 2)
-            except Exception as e:
-                continue
+        with SessionLocal() as session:
+            
+            users = session.query(UserModel).all()
+        
+            for user in users:
+                try:
+                    await client.send_message(PeerUser(user.user_id), message=event.message)
+                    success += 1
+                    await asyncio.sleep(0.1)
+                except FloodWaitError as e:
+                    await asyncio.sleep(e.seconds + 2)
+                except Exception as e:
+                    continue
         
         await event.reply(message_sended(success_num=success))
         
@@ -99,12 +103,14 @@ async def get_user_send_to_user(event: Message) -> None:
     
         user = int(event.message.message)
         
-        if await get_user(user_id=user):
-            set_step(user_id=event.sender_id, step=Parts.GET_MESSAGE_SEND_TO_USER)
-            await event.reply(ENTER_MESSAGE, buttons=InlineButtons.CANCEL_ADMIN)
-        
-        else:
-            await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
+        with SessionLocal() as session:
+            user = session.query(UserModel).filter_by(user_id=user).first()
+            if user:
+                set_step(user_id=event.sender_id, step=Parts.GET_MESSAGE_SEND_TO_USER)
+                await event.reply(ENTER_MESSAGE, buttons=InlineButtons.CANCEL_ADMIN)
+            
+            else:
+                await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         raise StopPropagation
@@ -116,15 +122,14 @@ async def get_message_send_to_user(event: Message) -> None:
     try:
     
         try:
-            # TODO check
-            await client.send_message(PeerUser(13), message=event.message)
+            user_step = get_user_step(event.sender_id)
+            await client.send_message(PeerUser(user_id=user_step.user_geted), message=event.message)
             await event.reply(message_sended(1))
         except:
             await event.reply(NOT_SEND)
         finally:
             delete_step(user_id=event.sender_id)
 
-    
     finally:
         raise StopPropagation  
     

@@ -2,12 +2,12 @@
 
 from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
-from functions.database_functions import get_user, ban_user, unban_user
 from functions.step_functions import Parts, set_step, delete_step
 from functions.filters_functions import filter_admin_move, filter_ban_user, filter_unban_user, filter_user_info
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import ENTER_USER_ID, SELECT, UPDATED, USER_NOT_EXIST, user_info as user_info_str
 from settings.client import client
+from settings.database import SessionLocal, UserModel
 
 # endregion
 
@@ -76,12 +76,18 @@ async def ban_user_from_bot(event: Message) -> None:
     try:
     
         user = int(event.message.message)
-        if await ban_user(user_id=user):
-            await event.reply(UPDATED, buttons=InlineButtons.USER_SETTING)
-            delete_step(user_id=event.sender_id)
+        
+        with SessionLocal() as session:
+            user = session.query(UserModel).filter_by(user_id=user).first()
             
-        else:
-            await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
+            if user:
+                user.is_ban = True
+                session.commit()
+                await event.reply(UPDATED, buttons=InlineButtons.USER_SETTING)
+                delete_step(user_id=event.sender_id)
+            
+            else:
+                await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
         
     finally:
         raise StopPropagation
@@ -94,12 +100,18 @@ async def unban_user_from_bot(event: Message) -> None:
     try:
     
         user = int(event.message.message)
-        if await unban_user(user_id=user):
-            await event.reply(UPDATED, buttons=InlineButtons.USER_SETTING)
-            delete_step(user_id=event.sender_id)
+        
+        with SessionLocal() as session:
+            user = session.query(UserModel).filter_by(user_id=user).first()
             
-        else:
-            await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
+            if user:
+                user.is_ban = False
+                session.commit()
+                await event.reply(UPDATED, buttons=InlineButtons.USER_SETTING)
+                delete_step(user_id=event.sender_id)
+            
+            else:
+                await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
         
     finally:
         raise StopPropagation
@@ -113,13 +125,16 @@ async def get_user_info(event: Message) -> None:
     
         user = int(event.message.message)
         
-        if user_info := await get_user(user_id=user):
-            await event.reply(await user_info(user_info), buttons=InlineButtons.USER_SETTING)
-            delete_step(event.sender_id)
+        with SessionLocal() as session:
+            user = session.query(UserModel).filter_by(user_id=user).first()
+            
+            if user:
+                await event.reply(await user_info_str(user), buttons=InlineButtons.USER_SETTING)
+                delete_step(user_id=event.sender_id)
+            
+            else:
+                await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
         
-        else:
-            await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
-    
     finally:
         raise StopPropagation
 
