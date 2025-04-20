@@ -16,12 +16,7 @@ def check_db() -> None:
 
     if not os.path.exists('database.db'):
         print('database not found')
-        from settings.database import Base, engine
-        # from models.channel_model import ChannelModel
-        # from models.config_model import ConfigsModel
-        # from models.user_model import UserModel
-        Base.metadata.create_all(bind=engine)
-        # exit(1)
+        exit(1)
 
 if __name__ == '__main__':
 
