@@ -14,7 +14,6 @@ from buttons.url_buttons import UrlButtons
 # endregion
 
 async def check_join(user_id: int, send_message: Optional[bool] = False, invited_by_user: int | None = None) -> bool:
-    "return : yek list az button ha baraya channel haye delete shode ast"
 
     with SessionLocal() as session:
         channels = session.query(ChannelModel).all()
@@ -23,7 +22,6 @@ async def check_join(user_id: int, send_message: Optional[bool] = False, invited
             return True
 
         not_joined = []
-        not_admin = []
 
         for channel in channels:
 
@@ -35,7 +33,11 @@ async def check_join(user_id: int, send_message: Optional[bool] = False, invited
                 not_joined.append(channel)
             
             except (ChatAdminRequiredError, ChannelPrivateError):
-                not_admin.append(channel)
+                try:
+                    await client.send_message((CREATOR_USER_ID), message=channel_deleted(channel))
+                except Exception as e:
+                    print(e)
+                    
                 session.delete(channel)
 
             except Exception as e:
@@ -44,11 +46,6 @@ async def check_join(user_id: int, send_message: Optional[bool] = False, invited
         
         session.commit()
 
-        for channel in not_admin:
-            try:
-                await client.send_message((CREATOR_USER_ID), message=channel_deleted(channel))
-            except Exception as e:
-                print(e)
         
         if not not_joined:
             return True
