@@ -1,31 +1,59 @@
-from telethon.events import NewMessage, CallbackQuery
+from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
-from functions.step_functions import Parts, set_step, delete_step
 from buttons.inline_buttons import InlineButtons, InlineButtonsData, BackToEnum
-from settings.strings import ENTER_USER_ID, SELECT, ENTER_MESSAGE
+from buttons.text_buttons import TextButtons
+from buttons.commands import Commands
+from settings.strings import START_MENU
 from settings.client import client
+from functions.check_user import check_user
 
 
 # CallbackQuery handler, show send message panel
-@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_PANEL))
-async def join(event: CallbackQuery.Event) -> None:
+@client.on(event=CallbackQuery(pattern=f"^{InlineButtonsData.JOINED_IN_CHANNEL}"))
+async def check_user_inline(event: CallbackQuery.Event) -> None:
     
     try:
-    
-        await event.edit(SELECT, buttons=InlineButtons.back_to(BackToEnum.ADMIN_PANEL))
-    
+
+        invited_by = None
+        data = str(event.data.decode())
+        if data.startswith(InlineButtonsData.JOINED_IN_CHANNEL):
+            
+            await event.delete()
+            invited_by = data.split("_")[-1]
+            invited_by = int(invited_by) if invited_by else None
+        
+        if not await check_user(event.sender_id, invited_by):
+            raise StopPropagation
+        
+        if data.startswith(InlineButtonsData.JOINED_IN_CHANNEL):
+            await event.respond(START_MENU, buttons=TextButtons.START_MENU)
+            raise StopPropagation()
+            
     finally:
         pass
 
-# CallbackQuery handler, show send message panel
-@client.on(event=CallbackQuery(data=InlineButtonsData.SEND_PANEL))
-async def send_panel(event: CallbackQuery.Event) -> None:
+
+# NewMessage handler, show send message panel
+@client.on(event=NewMessage(pattern=r".*", incoming=True))
+async def check_user_text(event: CallbackQuery.Event) -> None:
     
     try:
     
-        await event.edit(SELECT, buttons=InlineButtons.back_to(BackToEnum.ADMIN_PANEL))
+
+        invited_by = None
+        text = str(event.message.message)
+        if text.startswith(f"{Commands.START} "):
+            
+            await event.delete()
+            invited_by = text.split(" ")[-1]
+            invited_by = int(invited_by) if invited_by else None
     
+        if not await check_user(event.sender_id, invited_by):
+            raise StopPropagation
+        
+        if text.startswith(Commands.START):
+            await event.respond(START_MENU, buttons=TextButtons.START_MENU)
+            raise StopPropagation()
+            
     finally:
         pass
-
-

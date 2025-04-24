@@ -15,18 +15,6 @@ from settings.database import SessionLocal, UserModel, ConfigsModel
 
 # region NewMessage Handlers
 
-# NewMessage handler, open start menu
-@client.on(event=NewMessage(pattern=f"^{Commands.START}", func=filter_user_move))
-async def start_menu(event: CallbackQuery.Event) -> None:
-    
-    try:
-    
-        await event.reply(START_MENU, buttons=TextButtons.START_MENU)
-    
-    finally:
-        raise StopPropagation
-
-
 # NewMessage handler, back to start menu panel
 @client.on(event=NewMessage(pattern=fr"({TextButtonsString.RULES})", func=filter_user_move))
 async def rules(event: CallbackQuery.Event) -> None:

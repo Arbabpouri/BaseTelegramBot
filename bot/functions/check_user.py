@@ -58,7 +58,7 @@ async def check_join(user_id: int, send_message: Optional[bool] = False, invited
         finally:
             return False
 
-async def check_user(user_id: int) -> bool:
+async def check_user(user_id: int, invited_by_user_id: int | None = None) -> bool:
     is_joined = await check_join(user_id=user_id, send_message=True)
     with SessionLocal() as session:
 
