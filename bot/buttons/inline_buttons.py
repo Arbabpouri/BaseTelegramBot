@@ -16,7 +16,7 @@ class InlineButtonsData:
     DELETE_ADMIN = b"DELETE_ADMIN"
     SHOW_ADMINS = b"SHOW_ADMIN"
     ADD_CHANNEL = b"ADD_CHANNEL"
-    DELETE_CHANNEL = b"DELETE_CHANNEL-"
+    DELETE_CHANNEL = b"DELETE_CHANNEL_"
     SEND_TO_USER = b"SEND_TO_USER"
     SEND_TO_USERS = b"SEND_TO_USERS"
     BAN_USER = b"BAN_USER"
@@ -34,8 +34,8 @@ class InlineButtonsData:
     CANCEL_USER = b"CANCEL_USER"
     
     
-    delete_channel = lambda channel_id: f"{InlineButtonsData.DELETE_CHANNEL}{channel_id}"
-    joined_in_channel = lambda user_id: f"{InlineButtonsData.JOINED_IN_CHANNEL}{user_id}"
+    delete_channel = lambda channel_id: f"{InlineButtonsData.DELETE_CHANNEL.decode()}{channel_id}".encode()
+    joined_in_channel = lambda user_id: f"{InlineButtonsData.JOINED_IN_CHANNEL.decode()}{user_id}".encode()
     
 
 # All Inline Button Text

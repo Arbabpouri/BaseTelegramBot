@@ -52,7 +52,7 @@ async def check_join(user_id: int, send_message: Optional[bool] = False, invited
 
         try:
             if send_message and not_joined:
-                await client.send_message(PeerUser(user_id), JOIN_TO_CHANNELS, buttons=UrlButtons.channels_locked(not_joined, invited_user_id=invited_by_user))
+                await client.send_message(PeerUser(user_id), JOIN_TO_CHANNELS, buttons=await UrlButtons.channels_locked(not_joined, invited_user_id=invited_by_user))
         except Exception as e:
             print("error in send message for join channel : ". e)
         finally:
@@ -85,7 +85,7 @@ async def check_user(user_id: int, invited_by_user_id: int | None = None) -> boo
             invited_by_user_id.balance += config.referral_bonus
         
             try:
-                await client.send_message(PeerUser(invited_by_user_id.user_id), referral_bonus(user_id, config.referral_bonus))
+                await client.send_message(PeerUser(invited_by_user_id.user_id), referral_bonus(user_id, config.referral_bonus), parse_mode='html')
             except: pass
             session.commit()
             

@@ -3,6 +3,7 @@
 from models import UserModel
 from settings.database import SessionLocal
 from functions.step_functions import get_user_step, Parts
+from buttons.inline_buttons import InlineButtonsData
 
 
 # endregion
@@ -85,6 +86,12 @@ async def filter_add_channel(event) -> bool:
         user_step.step == Parts.ADD_CHANNEL and 
         await user_is_admin(event.sender_id)
     )  
+
+async def filter_delete_channel(event) -> bool:
+    return bool(
+        str(event.data.decode()).startswith(InlineButtonsData.DELETE_CHANNEL.decode()) and 
+        await filter_admin_move(event)
+    )
 
 async def filter_get_message_send_users(event) -> bool:
     user_step = get_user_step(event.sender_id)

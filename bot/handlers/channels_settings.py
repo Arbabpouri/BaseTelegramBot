@@ -15,7 +15,7 @@ from settings.strings import (
     CHANNEL_ALREADY_EXIST,
     BOT_NOT_ADMIN
 )
-from functions.filters_functions import filter_admin_move, filter_add_channel
+from functions.filters_functions import filter_admin_move, filter_add_channel, filter_delete_channel
 from settings.client import client
 from settings.database import SessionLocal, ChannelModel
 
@@ -32,6 +32,9 @@ async def channels_panel(event: CallbackQuery.Event) -> None:
         with SessionLocal() as session:
             channels = session.query(ChannelModel).all()
             await event.edit(SELECT, buttons=await InlineButtons.channels_panel(channels=channels))
+    
+    except Exception as e:
+        print(e)
     
     finally:
         raise StopPropagation
@@ -51,21 +54,24 @@ async def add_channel_set_step(event: CallbackQuery.Event) -> None:
     
     
 # CallBack handler, get channels user id and check in db? and remove from db
-@client.on(event=CallbackQuery(pattern=f"^b{InlineButtonsData.DELETE_CHANNEL}", func=filter_admin_move))
-async def delete_channel(event: Message) -> None:
+@client.on(event=CallbackQuery(func=filter_delete_channel))
+async def delete_channel(event: CallbackQuery.Event) -> None:
     
-    try:
-        
-        channel_id = int(str(event.data.decode()).replace(InlineButtonsData.DELETE_CHANNEL, ''))
+    try:        
+        channel_id = int(str(event.data.decode()).replace(InlineButtonsData.DELETE_CHANNEL.decode(), ''))
         with SessionLocal() as session:
             channel = session.query(ChannelModel).filter_by(channel_id=channel_id).first()
+            channels = session.query(ChannelModel).all()
             if channel:
                 session.delete(channel)
                 session.commit()
-                await event.edit(DELETED, buttons=await InlineButtons.channels_panel())
+                await event.edit(DELETED, buttons=await InlineButtons.channels_panel(channels=channels))
             else:
-                channels = session.query(ChannelModel).all()
+                
                 await event.edit(ERROR, buttons=await InlineButtons.channels_panel(channels=channels))
+    
+    except Exception as e:
+        print(e)
         
     finally:
         raise StopPropagation
@@ -98,7 +104,7 @@ async def new_channel(event: Message) -> None:
 
             if not check_channel:
                 
-                channel_info = await client(GetFullChannelRequest(PeerChannel(int(check_channel.id))))
+                channel_info = await client(GetFullChannelRequest(PeerChannel(int(channel.id))))
                 channel_add = ChannelModel(
                     channel_id=channel.id,
                     channel_name=channel.title,
@@ -110,7 +116,7 @@ async def new_channel(event: Message) -> None:
                 
                 delete_step(user_id=event.sender_id)
                 channels = session.query(ChannelModel).all()
-                await event.reply(ADDED, buttons=await InlineButtons.channels_panel(channeles=channels))
+                await event.reply(ADDED, buttons=await InlineButtons.channels_panel(channels=channels))
     
             else:
                 await event.reply(CHANNEL_ALREADY_EXIST)
