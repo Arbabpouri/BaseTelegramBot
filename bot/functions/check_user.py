@@ -6,10 +6,10 @@ from telethon.types import PeerUser, PeerChannel
 from telethon.errors import UserNotParticipantError, ChatAdminRequiredError, ChannelPrivateError
 from settings.database import SessionLocal
 from typing import Optional
-from models import ChannelModel
+from models import ChannelModel, UserModel, ConfigsModel
 from settings.client import client
 from settings.config import CREATOR_USER_ID
-from settings.strings import channel_deleted, JOIN_TO_CHANNELS
+from settings.strings import channel_deleted, JOIN_TO_CHANNELS, referral_bonus
 from buttons.url_buttons import UrlButtons
 # endregion
 
@@ -58,3 +58,35 @@ async def check_join(user_id: int, send_message: Optional[bool] = False, invited
         finally:
             return False
 
+async def check_user(user_id: int) -> bool:
+    is_joined = await check_join(user_id=user_id, send_message=True)
+    with SessionLocal() as session:
+
+        user = session.query(UserModel).filter_by(user_id=int(user_id)).first()
+        
+        if invited_by_user_id or (user and user.invited_by):
+            invited_by_user_id: UserModel = session.query(UserModel).filter_by(user_id=int(invited_by_user_id or user.invited_by)).first()
+            
+        if not user:
+            user = UserModel(
+                user_id=int(user_id), 
+                invited_by=invited_by_user_id.user_id if invited_by_user_id else None, 
+                referral_active=False if invited_by_user_id != None else None, 
+            )
+            session.add(user)
+            session.commit()
+        
+        if not is_joined:
+            return False
+        
+        if is_joined and invited_by_user_id and not user.referral_active:
+            config = session.query(ConfigsModel).first()
+            user.referral_active = True
+            invited_by_user_id.balance += config.referral_bonus
+        
+            try:
+                await client.send_message(PeerUser(invited_by_user_id.user_id), referral_bonus(user_id, config.referral_bonus))
+            except: pass
+            session.commit()
+            
+        return True
