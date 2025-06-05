@@ -16,7 +16,7 @@ from settings.database import SessionLocal, UserModel, ConfigsModel
 # region NewMessage Handlers
 
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=fr"({TextButtonsString.RULES})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.RULES})", func=filter_user_move))
 async def rules(event: CallbackQuery.Event) -> None:
     
     try:
@@ -29,7 +29,7 @@ async def rules(event: CallbackQuery.Event) -> None:
     
     
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=fr"({TextButtonsString.HELP})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.HELP})", func=filter_user_move))
 async def help(event: CallbackQuery.Event) -> None:
     
     try:
@@ -42,7 +42,7 @@ async def help(event: CallbackQuery.Event) -> None:
     
 
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=fr"({TextButtonsString.CONTACT_US})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.CONTACT_US})", func=filter_user_move))
 async def contact_us(event: CallbackQuery.Event) -> None:
     
     try:
@@ -53,7 +53,7 @@ async def contact_us(event: CallbackQuery.Event) -> None:
     
     
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=fr"({TextButtonsString.DEPOSIT_PANEL})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.DEPOSIT_PANEL})", func=filter_user_move))
 async def deposit(event: CallbackQuery.Event) -> None:
     
     try:
@@ -65,7 +65,7 @@ async def deposit(event: CallbackQuery.Event) -> None:
     
     
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=fr"({TextButtonsString.REFERRAL})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.REFERRAL})", func=filter_user_move))
 async def referral(event: CallbackQuery.Event) -> None:
     
     try:

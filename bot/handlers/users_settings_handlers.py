@@ -70,7 +70,7 @@ async def show_user_info_set_step(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage handler, Ban user
-@client.on(event=NewMessage(pattern=r"^[0-9]*$", func=filter_ban_user))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_ban_user))
 async def ban_user_from_bot(event: Message) -> None:
     
     try:
@@ -94,7 +94,7 @@ async def ban_user_from_bot(event: Message) -> None:
 
 
 # NewMessage handler, UnBan user
-@client.on(event=NewMessage(pattern=r"^[0-9]*$", func=filter_unban_user))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_unban_user))
 async def unban_user_from_bot(event: Message) -> None:
     
     try:
@@ -118,7 +118,7 @@ async def unban_user_from_bot(event: Message) -> None:
     
     
 # NewMessage handler, show user info
-@client.on(event=NewMessage(pattern=r"^[0-9]*$", func=filter_user_info))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_user_info))
 async def get_user_info(event: Message) -> None:
     
     try:

@@ -34,7 +34,7 @@ async def bot_status(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage handler, show user stats
-@client.on(event=NewMessage(pattern=TextButtonsString.MY_ACCOUNT, func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=TextButtonsString.MY_ACCOUNT, func=filter_user_move))
 async def user_account_info(event: CallbackQuery.Event) -> None:
     
     try:

@@ -103,7 +103,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
 # region NewMessageHandlers
 
 # NewMessage handler, change rule
-@client.on(event=NewMessage(pattern=".*", func=filter_set_rule))
+@client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_rule))
 async def set_rule(event: Message) -> None:
     
     try:
@@ -125,7 +125,7 @@ async def set_rule(event: Message) -> None:
     
     
 # NewMessage handler, change help
-@client.on(event=NewMessage(pattern=".*", func=filter_set_help))
+@client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_help))
 async def set_help(event: Message) -> None:
     
     try:
@@ -147,7 +147,7 @@ async def set_help(event: Message) -> None:
     
     
 # NewMessage handler, change support channel
-@client.on(event=NewMessage(pattern=r"^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+", func=filter_set_support_channel))
+@client.on(event=NewMessage(incoming=True, pattern=r"^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+", func=filter_set_support_channel))
 async def set_support_channel(event: Message) -> None:
     
     try:
@@ -168,7 +168,7 @@ async def set_support_channel(event: Message) -> None:
     
     
 # NewMessage handler, change referral bonus
-@client.on(event=NewMessage(pattern=r"^[0-9]*$", func=filter_set_referral_bonus))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_set_referral_bonus))
 async def set_referral_bonus(event: Message) -> None:
     
     try:
@@ -190,7 +190,7 @@ async def set_referral_bonus(event: Message) -> None:
     
     
 # NewMessage handler, change entry prize
-@client.on(event=NewMessage(pattern=r"^[0-9]*$", func=filter_set_entry_prize))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_set_entry_prize))
 async def set_entry_prize(event: Message) -> None:
     
     try:

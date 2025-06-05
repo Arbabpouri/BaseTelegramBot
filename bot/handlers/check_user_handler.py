@@ -35,7 +35,7 @@ async def check_user_inline(event: CallbackQuery.Event) -> None:
             
 
 # NewMessage handler, show send message panel
-@client.on(event=NewMessage(pattern=r".*", incoming=True))
+@client.on(event=NewMessage(incoming=True, pattern=r".*"))
 async def check_user_text(event: Message) -> None:
     
     try:

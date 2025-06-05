@@ -96,7 +96,7 @@ async def get_message_send_to_users(event: Message) -> None:
         raise StopPropagation
 
 
-@client.on(event=NewMessage(pattern=r"^[0-9]*$", incoming=True, func=filter_get_user_send))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_get_user_send))
 async def get_user_send_to_user(event: Message) -> None:
     
     try:

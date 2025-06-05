@@ -84,7 +84,7 @@ async def delete_channel(event: CallbackQuery.Event) -> None:
 
 
 # NewMessage handler, get channels user id and add to db
-@client.on(event=NewMessage(forwards=True, incoming=True, func=filter_add_channel))
+@client.on(event=NewMessage(incoming=True, forwards=True, func=filter_add_channel))
 async def new_channel(event: Message) -> None:
     
     try:

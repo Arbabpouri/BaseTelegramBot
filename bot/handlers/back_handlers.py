@@ -42,7 +42,7 @@ async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage handler, back to start menu panel
-@client.on(event=NewMessage(pattern=TextButtonsString.BACK_TO_START))
+@client.on(event=NewMessage(incoming=True, pattern=TextButtonsString.BACK_TO_START))
 async def back_to_start_panel(event: CallbackQuery.Event) -> None:
     
     try:
