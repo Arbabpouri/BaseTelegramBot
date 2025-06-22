@@ -17,7 +17,7 @@ async def check_user_inline(event: CallbackQuery.Event) -> None:
         invited_by = None
         data = str(event.data.decode())
 
-        if data.startswith(str(InlineButtonsData.JOINED_IN_CHANNEL.decode())):
+        if data.startswith(InlineButtonsData.JOINED_IN_CHANNEL.decode()):
             
             await event.delete()
             invited_by = data.split("_")[-1]
@@ -26,9 +26,9 @@ async def check_user_inline(event: CallbackQuery.Event) -> None:
         if not await check_user(event.sender_id, invited_by):
             raise StopPropagation
         
-        if data.startswith(str(InlineButtonsData.JOINED_IN_CHANNEL.decode())):
+        if data.startswith(InlineButtonsData.JOINED_IN_CHANNEL.decode()):
             await event.respond(START_MENU, buttons=TextButtons.START_MENU)
-            raise StopPropagation()
+            raise StopPropagation
     
     except Exception as e:
         print(e)
@@ -54,7 +54,7 @@ async def check_user_text(event: Message) -> None:
         
         if text.startswith(Commands.START):
             await event.respond(START_MENU, buttons=TextButtons.START_MENU)
-            raise StopPropagation()
+            raise StopPropagation
             
     finally:
         pass
