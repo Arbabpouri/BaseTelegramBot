@@ -2,7 +2,7 @@ from typing import Iterable
 from models.channel_model import ChannelModel
 from models.config_model import ConfigsModel
 from models.user_model import UserModel
-from settings.config import BOT_USERNAME
+from settings.config import BOT_USERNAME, REFERRAL_BONUS, ENTRY_PRIZE
 
 
 # region functions
@@ -22,21 +22,21 @@ def my_account(user: UserModel) -> str:
     )
 
 
-def referral_banner(user_id: int, referral_info: ConfigsModel) -> str:
+def referral_banner(user_id: int) -> str:
     return (
         "⚠️ با تاس🎲 انداختن پول در بیار!\n\n"
 
         "ربات زیر با تاس🎲 انداختن پول میده باورت میشه؟ :)\n\n"
 
-        f"🎁 به کاربرای جدید هم {referral_info.entry_prize:,} تومان هدیه خوش آمدگویی میده از دستش نده 🥳👇\n\n"
+        f"🎁 به کاربرای جدید هم {ENTRY_PRIZE:,} تومان هدیه خوش آمدگویی میده از دستش نده 🥳👇\n\n"
 
         f"https://t.me/{BOT_USERNAME}/?start={user_id}"
     )
 
 
-def referral_reply(user: UserModel, referral_info: ConfigsModel) -> str:
+def referral_reply(user: UserModel) -> str:
     return (
-        f"⚠️ بنر بالا را برای دوستانتان ارسال کنید و به ازای هر شخصی که با لینک شما در ربات عضو شود {referral_info.referral_bonus:,} تومان اعتبار هدیه دریافت خواهید کرد.\n\n"
+        f"⚠️ بنر بالا را برای دوستانتان ارسال کنید و به ازای هر شخصی که با لینک شما در ربات عضو شود {REFERRAL_BONUS:,} تومان اعتبار هدیه دریافت خواهید کرد.\n\n"
 
         f"👥 تعداد زیرمجموعه شما: {len(user.user_referrals)}"
     )
@@ -81,6 +81,8 @@ def user_info(user: UserModel) -> str:
 # region variable
 
 START_MENU = "🔹 سلام به ربات خوش اومدی, از منوی زیر انتخاب کن :"
+RULES = "متن پیش فرض قوانین"
+HELP = "متن پیش فرض راهنما"
 ADMIN_PANEL = "💢 به پنل ادمین خوش آمدید"
 CONTACT_US = "💬 تنها جهت پیگیری برداشتتان پیام دهید👇"
 SELECT = "⭕️ یک مورد را انتخاب کنید👇"

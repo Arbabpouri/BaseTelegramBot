@@ -12,9 +12,20 @@ from functions.filters_functions import (
     filter_set_referral_bonus,
 )
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
-from settings.strings import SELECT, ENTER_NUMBER, ENTER_TEXT, ENTER_URL, UPDATED, ERROR
+from settings.strings import (
+    START_MENU,
+    RULES,
+    HELP,
+    SELECT,
+    ENTER_NUMBER,
+    ENTER_TEXT,
+    ENTER_URL,
+    UPDATED,
+    ERROR
+)
 from settings.client import client
 from settings.database import SessionLocal, ConfigsModel
+from settings.config import ENTRY_PRIZE, REFERRAL_BONUS, SUPPORT_CHANNEL_URL
 
 # endregion
 
@@ -28,6 +39,30 @@ async def config_settings_panel(event: CallbackQuery.Event) -> None:
     try:
     
         await event.edit(SELECT, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        raise StopPropagation
+
+
+# CallbackQuery handler, show bots configs text
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_TEXTS_SETTINGS, func=filter_admin_move))
+async def config_text_panel(event: CallbackQuery.Event) -> None:
+    
+    try:
+    
+        await event.edit(SELECT, buttons=InlineButtons.CHANGE_TEXTS_SETTINGS)
+        
+    finally:
+        raise StopPropagation
+
+
+# CallbackQuery handler, show bots configs referral
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_REFERRAL_SETTINGS, func=filter_admin_move))
+async def config_referral_panel(event: CallbackQuery.Event) -> None:
+    
+    try:
+    
+        await event.edit(SELECT, buttons=InlineButtons.CHANGE_REFERRAL_SETTINGS)
         
     finally:
         raise StopPropagation
@@ -48,7 +83,7 @@ async def change_entry_prize_set_step(event: CallbackQuery.Event) -> None:
 
 # CallbackQuery handler, set step change referral bonus set step
 @client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_REFERRAL_BONUS, func=filter_admin_move))
-async def remove_config_set_step(event: CallbackQuery.Event) -> None:
+async def change_referral_bonus(event: CallbackQuery.Event) -> None:
     
     try:
     
@@ -74,7 +109,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
 
 # CallbackQuery handler, set step for change helps set step
 @client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_HELP_TEXT, func=filter_admin_move))
-async def change_rule_set_step(event: CallbackQuery.Event) -> None:
+async def change_help_set_step(event: CallbackQuery.Event) -> None:
     
     try:
     
@@ -87,7 +122,7 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     
 # CallbackQuery handler, set step for change support channel set step
 @client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_SUPPORT_CHANNEL, func=filter_admin_move))
-async def change_rule_set_step(event: CallbackQuery.Event) -> None:
+async def change_support_channel_set_step(event: CallbackQuery.Event) -> None:
     
     try:
     
@@ -96,7 +131,22 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
     
     finally:
         raise StopPropagation
+
+
+# CallbackQuery handler, set step for change start menu text set step
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_START_MENU_TEXT, func=filter_admin_move))
+async def change_start_menu_set_step(event: CallbackQuery.Event) -> None:
     
+    try:
+    
+        set_step(user_id=event.sender_id, step=Parts.CHANGE_START_MENU)
+        await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
+    
+    finally:
+        raise StopPropagation
+
+
+
 # endregion
 
 
@@ -107,10 +157,12 @@ async def change_rule_set_step(event: CallbackQuery.Event) -> None:
 async def set_rule(event: Message) -> None:
     
     try:
-        
+        global RULES
+        text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
-            config.rules_text = str(event.message.message)
+            config.rules_text = text
+            RULES = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -129,10 +181,12 @@ async def set_rule(event: Message) -> None:
 async def set_help(event: Message) -> None:
     
     try:
-    
+        global HELP
+        text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
-            config.help_text = str(event.message.message)
+            config.help_text = text
+            HELP = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -145,16 +199,42 @@ async def set_help(event: Message) -> None:
         delete_step(user_id=event.sender_id)
         raise StopPropagation
     
+
+# NewMessage handler, change start menu text
+@client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_help))
+async def set_start_menu(event: Message) -> None:
     
+    try:
+        global START_MENU
+        text = str(event.message.message)
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.start_menu_text = text
+            START_MENU = text
+            session.commit()
+            
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+        raise StopPropagation
+   
+
 # NewMessage handler, change support channel
 @client.on(event=NewMessage(incoming=True, pattern=r"^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+", func=filter_set_support_channel))
 async def set_support_channel(event: Message) -> None:
     
     try:
-    
+        global SUPPORT_CHANNEL_URL
+        text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
-            config.support_channel_url = str(event.message.message)
+            config.support_channel_url = text
+            SUPPORT_CHANNEL_URL = text
             session.commit()
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
@@ -172,10 +252,12 @@ async def set_support_channel(event: Message) -> None:
 async def set_referral_bonus(event: Message) -> None:
     
     try:
-    
+        global REFERRAL_BONUS
+        num = int(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
-            config.referral_bonus = int(event.message.message)
+            config.referral_bonus = num
+            REFERRAL_BONUS = num
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -194,10 +276,12 @@ async def set_referral_bonus(event: Message) -> None:
 async def set_entry_prize(event: Message) -> None:
     
     try:
-    
+        global ENTRY_PRIZE
+        num = int(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
-            config.entry_prize = int(event.message.message)
+            config.entry_prize = num
+            ENTRY_PRIZE = num
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)

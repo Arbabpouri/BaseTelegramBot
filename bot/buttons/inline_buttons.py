@@ -24,11 +24,14 @@ class InlineButtonsData:
     BAN_USER = b"BAN_USER"
     UNBAN_USER = b"UNBAN_USER"
     SHOW_USER_INFO = b"SHOW_USER_INFO"
+    CHANGE_REFERRAL_SETTINGS = b"CHANGE_REFERRAL_SETTINGS"
+    CHANGE_TEXTS_SETTINGS = b"CHANGE_TEXTS_SETTINGS"
     CHANGE_RULES_TEXT = b"CHANGE_RULES_TEXT"
     CHANGE_HELP_TEXT = b"CHANGE_HELP_TEXT"
     CHANGE_ENTERY_PRIZE = b"CHANGE_ENTERY_PRIZE"
     CHANGE_SUPPORT_CHANNEL = b"CHANGE_SUPPORT_CHANNEL"
     CHANGE_REFERRAL_BONUS = b"CHANGE_REFERRAL_BONUS"
+    CHANGE_START_MENU_TEXT = b"CHANGE_START_MENU_TEXT"
     JOINED_IN_CHANNEL = b"JOINED_IN_CHANNEL_"
     BACK_TO_ADMIN = b"BACK_TO_ADMIN"
     BACK_TO_ADMIN_SETTING = b"BACK_TO_ADMIN_SETTING"
@@ -60,11 +63,14 @@ class InlineButtonString:
     BAN_USER = "❌| بن کردن کاربر"
     UNBAN_USER = "✅|  انبن کردن کاربر"
     SHOW_USER_INFO = "👀| مشخصات کاربر"
+    CHANGE_REFERRAL_SETTINGS = "📌 | تنظیمات زیرمجموعه گیری"
+    CHANGE_TEXTS_SETTINGS = "📌 | تنظیمات متن ها"
     CHANGE_RULES_TEXT = "⚙️| تغییر متن قوانین"
     CHANGE_HELP_TEXT = "⚙️| تغییر متن راهنما"
     CHANGE_ENTERY_PRIZE = "⚙️| تغییر هدیه استارت"
     CHANGE_SUPPORT_CHANNEL = "⚙️| تغییر کانال اعتماد"
     CHANGE_REFERRAL_BONUS = "⚙️| تغییر هزینه زیرمجموعه"
+    CHANGE_START_MENU_TEXT = "⚙️| تغییر متن شروع"
     JOINED_IN_CHANNEL = "تایید عضویت ✅"
     BACK = "📍 | بازگشت"
 
@@ -73,6 +79,7 @@ class InlineButtonString:
 class BackToEnum(IntEnum):
     ADMIN_PANEL = 0
     ADMIN_SETTING = 1
+    BOT_SETTINGS_PANEL = 2
     
 
 # All Inline Button
@@ -195,11 +202,18 @@ class InlineButtons:
 
     CONFIGS_PANEL = (
         (
-            Button.inline(text=InlineButtonString.CHANGE_RULES_TEXT, data=InlineButtonsData.CHANGE_RULES_TEXT),
+            Button.inline(text=InlineButtonString.CHANGE_TEXTS_SETTINGS, data=InlineButtonsData.CHANGE_TEXTS_SETTINGS),
         ),
         (
-            Button.inline(text=InlineButtonString.CHANGE_HELP_TEXT, data=InlineButtonsData.CHANGE_HELP_TEXT),
+            Button.inline(text=InlineButtonString.CHANGE_REFERRAL_SETTINGS, data=InlineButtonsData.CHANGE_REFERRAL_SETTINGS),
         ),
+        (
+            back_to(back_to=BackToEnum.ADMIN_PANEL)
+        )
+    )
+
+
+    CHANGE_REFERRAL_SETTINGS = (
         (
             Button.inline(text=InlineButtonString.CHANGE_ENTERY_PRIZE, data=InlineButtonsData.CHANGE_ENTERY_PRIZE),
         ),
@@ -210,8 +224,25 @@ class InlineButtons:
             Button.inline(text=InlineButtonString.CHANGE_SUPPORT_CHANNEL, data=InlineButtonsData.CHANGE_SUPPORT_CHANNEL),
         ),
         (
-            back_to(back_to=BackToEnum.ADMIN_PANEL),
+            back_to(back_to=BackToEnum.BOT_SETTINGS_PANEL),
         )
+    )
+    
+    
+    CHANGE_TEXTS_SETTINGS = (
+        (
+            Button.inline(text=InlineButtonString.CHANGE_START_MENU_TEXT, data=InlineButtonsData.CHANGE_START_MENU_TEXT),
+        ),
+        (
+            Button.inline(text=InlineButtonString.CHANGE_RULES_TEXT, data=InlineButtonsData.CHANGE_RULES_TEXT),
+        ),
+        (
+            Button.inline(text=InlineButtonString.CHANGE_HELP_TEXT, data=InlineButtonsData.CHANGE_HELP_TEXT),
+        ),
+        (
+            back_to(back_to=BackToEnum.BOT_SETTINGS_PANEL),
+        ),
+        
     )
 
 

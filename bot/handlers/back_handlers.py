@@ -36,6 +36,18 @@ async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
         raise StopPropagation
     
 
+# CallbackQuery handler, back to bot settings
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN_SETTING, func=filter_admin_move))
+async def back_to_bot_setting(event: CallbackQuery.Event) -> None:
+    
+    try:
+    
+        await event.edit(BACKED, buttons=InlineButtons.CONFIGS_PANEL)
+    
+    finally:
+        raise StopPropagation
+    
+
 # endregion
 
 
