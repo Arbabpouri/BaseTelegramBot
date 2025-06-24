@@ -30,6 +30,8 @@ class Parts:
     CHANGE_REFERRAL_BONUS = 15
     GET_MESSAGE = 16
     GET_MESSAGE_SEND_TO_USER = 17
+    FORWARD_TO_USER = 18
+    FORWARD_TO_USERS = 19
 
 redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
 

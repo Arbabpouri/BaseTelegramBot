@@ -32,7 +32,7 @@ async def send_panel(event: CallbackQuery.Event) -> None:
         await event.edit(SELECT, buttons=InlineButtons.SEND_PANEL)
     
     finally:
-        pass
+        raise StopPropagation
 
 
 # CallbackQuery handler, set step for send message to all users in db
@@ -45,8 +45,8 @@ async def send_to_users_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_MESSAGE, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
-    
+        raise StopPropagation
+
     
 # CallbackQuery handler, set step for send message to one user
 @client.on(event=CallbackQuery(data=InlineButtonsData.SEND_TO_USER, func=filter_admin_move))
@@ -58,7 +58,35 @@ async def send_to_user_set_step(event: CallbackQuery.Event) -> None:
         await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
-        pass
+        raise StopPropagation
+
+
+# CallbackQuery handler, set step for forward message to one user
+@client.on(event=CallbackQuery(data=InlineButtonsData.FORWARD_TO_USER, func=filter_admin_move))
+async def forward_to_user_set_step(event: CallbackQuery.Event) -> None:
+    
+    try:
+    
+        set_step(user_id=event.sender_id, step=Parts.FORWARD_TO_USER)
+        await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
+    
+    finally:
+        raise StopPropagation
+    
+
+# CallbackQuery handler, set step for forward message to one users
+@client.on(event=CallbackQuery(data=InlineButtonsData.FORWARD_TO_USERS, func=filter_admin_move))
+async def forward_to_users_set_step(event: CallbackQuery.Event) -> None:
+    
+    try:
+    
+        set_step(user_id=event.sender_id, step=Parts.FORWARD_TO_USERS)
+        await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
+    
+    finally:
+        raise StopPropagation
+    
+
 
 # endregion
 
@@ -71,6 +99,7 @@ async def get_message_send_to_users(event: Message) -> None:
     
     try:
     
+        func = client.send_message if get_user_step(event.sender_id) == Parts.SEND_TO_USERS else client.forward_messages
         delete_step(user_id=event.sender_id)
         await client.send_message(event.sender_id, SENDING, buttons=InlineButtons.SEND_PANEL)
         
@@ -82,9 +111,9 @@ async def get_message_send_to_users(event: Message) -> None:
         
             for user in users:
                 try:
-                    await client.send_message(PeerUser(user.user_id), message=event.message)
+                    await func(entity=PeerUser(user.user_id), message=event.message)
                     success += 1
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(0.05)
                 except FloodWaitError as e:
                     await asyncio.sleep(e.seconds + 2)
                 except Exception as e:

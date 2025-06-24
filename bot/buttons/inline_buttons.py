@@ -19,6 +19,8 @@ class InlineButtonsData:
     DELETE_CHANNEL = b"DELETE_CHANNEL_"
     SEND_TO_USER = b"SEND_TO_USER"
     SEND_TO_USERS = b"SEND_TO_USERS"
+    FORWARD_TO_USER = b"FORWARD_TO_USER"
+    FORWARD_TO_USERS = b"FORWARD_TO_USERS"
     BAN_USER = b"BAN_USER"
     UNBAN_USER = b"UNBAN_USER"
     SHOW_USER_INFO = b"SHOW_USER_INFO"
@@ -51,8 +53,10 @@ class InlineButtonString:
     SHOW_ADMINS = "👁| مشاهده ادمین ها"
     ADD_CHANNEL = "➕| افزودن کانال"
     DELETE_CHANNEL = "➖| حذف کانال"
-    SEND_TO_USER = "✍🏻|پیام به کاربر|👤"
-    SEND_TO_USERS = "✍🏻|پیام به کاربران|👥"
+    SEND_TO_USER = "📩|پیام به کاربر|👤"
+    SEND_TO_USERS = "📩|پیام به کاربران|👥"
+    FORWARD_TO_USER = "⏩|پیام به کاربر|👤"
+    FORWARD_TO_USERS = "⏩|پیام به کاربران|👥"
     BAN_USER = "❌| بن کردن کاربر"
     UNBAN_USER = "✅|  انبن کردن کاربر"
     SHOW_USER_INFO = "👀| مشخصات کاربر"
@@ -178,6 +182,10 @@ class InlineButtons:
         (
             Button.inline(text=InlineButtonString.SEND_TO_USER, data=InlineButtonsData.SEND_TO_USER),
             Button.inline(text=InlineButtonString.SEND_TO_USERS, data=InlineButtonsData.SEND_TO_USERS)
+        ),
+        (
+            Button.inline(text=InlineButtonString.FORWARD_TO_USER, data=InlineButtonsData.FORWARD_TO_USER),
+            Button.inline(text=InlineButtonString.FORWARD_TO_USERS, data=InlineButtonsData.FORWARD_TO_USERS)
         ),
         (
             back_to(back_to=BackToEnum.ADMIN_PANEL),
