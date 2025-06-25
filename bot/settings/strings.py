@@ -76,6 +76,14 @@ def user_info(user: UserModel) -> str:
         f"⛓ تعداد زیر مجموعه : {len(user.users_referrals)}"
     )
 
+
+def increase_user_balance(value: float | int) -> str:
+    return f"🎈 کاربر گرامی مقدار {value:,} تومان توسط ادمین به حساب شما اضافه شد"
+
+
+def reduce_user_balance(value: float | int) -> str:
+    return f"🎋 کاربر گرامی مقدار {value:,} تومان توسط ادمین از حساب شما کسر شد"
+
 # endregion
 
 # region variable
@@ -113,5 +121,5 @@ SENDING = "📌 درحال ارسال . . ."
 CHANNEL_ALREADY_EXIST = "⚠ این کانال وجود دارد لطفا کانال دیگری را ارسال کنید"
 JOIN_TO_CHANNELS = "⚠ برای فعالیت در ربات باید عضو کانال های زیر بشوید"
 NOT_SEND = "🧶 پیام ارسال نشد, احتمالا ربات را بلاک کرده است"
-
+SENDED = "✨ پیام با موفقیت ارسال شد"
 # endregion

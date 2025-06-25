@@ -24,6 +24,8 @@ class InlineButtonsData:
     BAN_USER = b"BAN_USER"
     UNBAN_USER = b"UNBAN_USER"
     SHOW_USER_INFO = b"SHOW_USER_INFO"
+    INCREASE_USER_BALANCE = b"INCREASE_USER_BALANCE"
+    REDUCE_USER_BALANCE = b"REDUCE_USER_BALANCE"
     CHANGE_REFERRAL_SETTINGS = b"CHANGE_REFERRAL_SETTINGS"
     CHANGE_TEXTS_SETTINGS = b"CHANGE_TEXTS_SETTINGS"
     CHANGE_RULES_TEXT = b"CHANGE_RULES_TEXT"
@@ -65,6 +67,8 @@ class InlineButtonString:
     BAN_USER = "❌| بن کردن کاربر"
     UNBAN_USER = "✅|  انبن کردن کاربر"
     SHOW_USER_INFO = "👀| مشخصات کاربر"
+    INCREASE_USER_BALANCE = "🔋 | افزایش موجودی کاربر"
+    REDUCE_USER_BALANCE = "🪫 | کاهش موجودی کاربر"
     CHANGE_REFERRAL_SETTINGS = "📌 | تنظیمات زیرمجموعه گیری"
     CHANGE_TEXTS_SETTINGS = "📌 | تنظیمات متن ها"
     CHANGE_RULES_TEXT = "⚙️| تغییر متن قوانین"
@@ -182,6 +186,10 @@ class InlineButtons:
         ),
         (
             Button.inline(text=InlineButtonString.SHOW_USER_INFO, data=InlineButtonsData.SHOW_USER_INFO),
+        ),
+        (
+            Button.inline(text=InlineButtonString.INCREASE_USER_BALANCE, data=InlineButtonsData.INCREASE_USER_BALANCE),
+            Button.inline(text=InlineButtonString.REDUCE_USER_BALANCE, data=InlineButtonsData.REDUCE_USER_BALANCE),
         ),
         (
             back_to(back_to=BackToEnum.ADMIN_PANEL),

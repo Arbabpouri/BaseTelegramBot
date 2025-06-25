@@ -5,18 +5,15 @@ from settings.database import SessionLocal
 from functions.step_functions import get_user_step, Parts
 from buttons.inline_buttons import InlineButtonsData
 
-
 # endregion
 
+# region rules
 
 async def user_is_admin(user_id: int) -> bool:
     
     with SessionLocal() as session:
         return bool(session.query(UserModel).filter_by(user_id=int(user_id), is_admin=True).first())
     
-    
-# region rules
-
 async def filter_user_move(event) -> bool:
     return event.is_private and not get_user_step(event.sender_id)
 
@@ -194,12 +191,34 @@ async def filter_user_info(event) -> bool:
         await user_is_admin(event.sender_id)
     )
 
-# async def filter_(event) -> bool:
-#     return bool(
-#         get_user_step(event.sender_id).step == Parts.DELETE_ADMIN and 
-#         await user_is_admin(event.sender_id)
-#     )
+async def filter_get_user_for_work(event) -> bool:
+    if not event.is_private:
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step in (Parts.GET_USER_FOR_INCREASE_BALANCE, Parts.GET_USER_FOR_REDUCE_BALANCE) and 
+        await user_is_admin(event.sender_id)
+    )
 
-
+async def filter_increase_user_balance(event) -> bool:
+    if not event.is_private:
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step == Parts.INCREASE_USER_BALANCE and 
+        await user_is_admin(event.sender_id)
+    )
+    
+async def filter_reduce_user_balance(event) -> bool:
+    if not event.is_private:
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step == Parts.REDUCE_USER_BALANCE and 
+        await user_is_admin(event.sender_id)
+    )
 
 # endregion
