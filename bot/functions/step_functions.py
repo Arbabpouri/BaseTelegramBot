@@ -33,6 +33,7 @@ class Parts:
     FORWARD_TO_USER = 18
     FORWARD_TO_USERS = 19
     CHANGE_START_MENU = 20
+    CHANGE_MESSAGE_TO_SUPPORT = 21
 
 redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
 

@@ -32,11 +32,13 @@ class InlineButtonsData:
     CHANGE_SUPPORT_CHANNEL = b"CHANGE_SUPPORT_CHANNEL"
     CHANGE_REFERRAL_BONUS = b"CHANGE_REFERRAL_BONUS"
     CHANGE_START_MENU_TEXT = b"CHANGE_START_MENU_TEXT"
+    CHANGE_MESSAGE_TO_SUPPORT_TEXT = b"CHANGE_MESSAGE_TO_SUPPORT_TEXT"
     JOINED_IN_CHANNEL = b"JOINED_IN_CHANNEL_"
     BACK_TO_ADMIN = b"BACK_TO_ADMIN"
     BACK_TO_ADMIN_SETTING = b"BACK_TO_ADMIN_SETTING"
     CANCEL_ADMIN = b"CANCEL_ADMIN"
     CANCEL_USER = b"CANCEL_USER"
+    MESSAGE_TO_SUPPORT_CONFIRM_RULES = b"MESSAGE_TO_SUPPORT_CONFIRM_RULES"
     
     
     delete_channel = lambda channel_id: f"{InlineButtonsData.DELETE_CHANNEL.decode()}{channel_id}".encode()
@@ -71,7 +73,9 @@ class InlineButtonString:
     CHANGE_SUPPORT_CHANNEL = "⚙️| تغییر کانال اعتماد"
     CHANGE_REFERRAL_BONUS = "⚙️| تغییر هزینه زیرمجموعه"
     CHANGE_START_MENU_TEXT = "⚙️| تغییر متن شروع"
+    CHANGE_MESSAGE_TO_SUPPORT_TEXT = "⚙️| تغییر متن پشتیبانی"
     JOINED_IN_CHANNEL = "تایید عضویت ✅"
+    I_UNDERSTAND = "⁉ متوجه شدم"
     BACK = "📍 | بازگشت"
 
 
@@ -240,6 +244,9 @@ class InlineButtons:
             Button.inline(text=InlineButtonString.CHANGE_HELP_TEXT, data=InlineButtonsData.CHANGE_HELP_TEXT),
         ),
         (
+            Button.inline(text=InlineButtonString.CHANGE_MESSAGE_TO_SUPPORT_TEXT, data=InlineButtonsData.CHANGE_MESSAGE_TO_SUPPORT_TEXT),
+        ),
+        (
             back_to(back_to=BackToEnum.BOT_SETTINGS_PANEL),
         ),
         
@@ -253,4 +260,9 @@ class InlineButtons:
     
     CANCEL_USER = (
         Button.inline(text=InlineButtonString.BACK, data=InlineButtonsData.CANCEL_USER),
+    )
+
+
+    MESSAGE_TO_SUPPORT = (
+        Button.inline(text=InlineButtonString.I_UNDERSTAND, data=InlineButtonsData.MESSAGE_TO_SUPPORT_CONFIRM_RULES),
     )

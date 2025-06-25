@@ -1,10 +1,12 @@
 # region imports
 
 from telethon.events import CallbackQuery, NewMessage, StopPropagation
+from telethon.custom import Message
+from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from buttons.url_buttons import UrlButtons
 from functions.filters_functions import filter_user_move
-from settings.strings import RULES, HELP, CONTACT_US, SELECT, referral_reply, referral_banner
+from settings.strings import RULES, HELP, CONTACT_US, MESSAGE_TO_SUPPORT_TEXT, SELECT, referral_reply, referral_banner
 from settings.config import REFERRAL_IMAGE_ADDRESS, SUPPORT_CHANNEL_URL
 from settings.client import client
 from settings.database import SessionLocal, UserModel
@@ -12,11 +14,27 @@ from settings.database import SessionLocal, UserModel
 # endregion
 
 
+# region CallBackQuery Handlers
+
+# CallBackQuery Handler, send support username
+@client.on(event=CallbackQuery(data=InlineButtonsData.MESSAGE_TO_SUPPORT_CONFIRM_RULES, func=filter_user_move))
+async def send_support_username(event: CallbackQuery.Event) -> None:
+    
+    try:
+        
+        await event.edit(CONTACT_US, buttons=UrlButtons.CONTACT_US)
+    
+    finally:
+        raise StopPropagation
+
+
+# endregion
+
 # region NewMessage Handlers
 
-# NewMessage handler, back to start menu panel
+# NewMessage handler, send rules
 @client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.RULES})", func=filter_user_move))
-async def rules(event: CallbackQuery.Event) -> None:
+async def rules(event: Message) -> None:
     
     try:
         
@@ -26,9 +44,9 @@ async def rules(event: CallbackQuery.Event) -> None:
         raise StopPropagation
     
     
-# NewMessage handler, back to start menu panel
+# NewMessage handler, send help text
 @client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.HELP})", func=filter_user_move))
-async def help(event: CallbackQuery.Event) -> None:
+async def help(event: Message) -> None:
     
     try:
         await event.reply(HELP, buttons=await UrlButtons.support_channel(SUPPORT_CHANNEL_URL))
@@ -37,20 +55,20 @@ async def help(event: CallbackQuery.Event) -> None:
         raise StopPropagation
     
 
-# NewMessage handler, back to start menu panel
+# NewMessage handler, send support 
 @client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.CONTACT_US})", func=filter_user_move))
-async def contact_us(event: CallbackQuery.Event) -> None:
+async def contact_us(event: Message) -> None:
     
     try:
-        await event.reply(CONTACT_US, buttons=UrlButtons.CONTACT_US)
+        await event.reply(MESSAGE_TO_SUPPORT_TEXT, buttons=InlineButtons.MESSAGE_TO_SUPPORT)
     
     finally:
         raise StopPropagation
     
     
-# NewMessage handler, back to start menu panel
+# NewMessage handler, send deposit panel
 @client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.DEPOSIT_PANEL})", func=filter_user_move))
-async def deposit(event: CallbackQuery.Event) -> None:
+async def deposit(event: Message) -> None:
     
     try:
     
@@ -60,9 +78,9 @@ async def deposit(event: CallbackQuery.Event) -> None:
         raise StopPropagation
     
     
-# NewMessage handler, back to start menu panel
+# NewMessage handler, send referral banner
 @client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.REFERRAL})", func=filter_user_move))
-async def referral(event: CallbackQuery.Event) -> None:
+async def referral(event: Message) -> None:
     
     try:
     

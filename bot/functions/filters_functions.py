@@ -66,7 +66,27 @@ async def filter_set_help(event) -> bool:
         user_step.step == Parts.CHANGE_HELP_TEXT and 
         await user_is_admin(event.sender_id)
     )
-    
+
+async def filter_set_start_menu(event) -> bool:
+    if not event.is_private:
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step == Parts.CHANGE_START_MENU and 
+        await user_is_admin(event.sender_id)
+    )
+
+async def filter_set_message_to_support(event) -> bool:
+    if not event.is_private:
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step == Parts.CHANGE_MESSAGE_TO_SUPPORT and 
+        await user_is_admin(event.sender_id)
+    )
+
 async def filter_set_support_channel(event) -> bool:
     if not event.is_private:
         return False

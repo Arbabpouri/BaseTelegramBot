@@ -8,6 +8,8 @@ from functions.filters_functions import (
     filter_set_entry_prize,
     filter_set_help,
     filter_set_rule,
+    filter_set_start_menu,
+    filter_set_message_to_support,
     filter_set_support_channel,
     filter_set_referral_bonus,
 )
@@ -16,6 +18,7 @@ from settings.strings import (
     START_MENU,
     RULES,
     HELP,
+    MESSAGE_TO_SUPPORT_TEXT,
     SELECT,
     ENTER_NUMBER,
     ENTER_TEXT,
@@ -146,6 +149,19 @@ async def change_start_menu_set_step(event: CallbackQuery.Event) -> None:
         raise StopPropagation
 
 
+# CallbackQuery handler, set step for change message to support text set step
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_MESSAGE_TO_SUPPORT_TEXT, func=filter_admin_move))
+async def change_start_menu_set_step(event: CallbackQuery.Event) -> None:
+    
+    try:
+    
+        set_step(user_id=event.sender_id, step=Parts.CHANGE_MESSAGE_TO_SUPPORT)
+        await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
+    
+    finally:
+        raise StopPropagation
+
+
 
 # endregion
 
@@ -201,7 +217,7 @@ async def set_help(event: Message) -> None:
     
 
 # NewMessage handler, change start menu text
-@client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_help))
+@client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_start_menu))
 async def set_start_menu(event: Message) -> None:
     
     try:
@@ -223,6 +239,30 @@ async def set_start_menu(event: Message) -> None:
         delete_step(user_id=event.sender_id)
         raise StopPropagation
    
+
+# NewMessage handler, change start menu text
+@client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_message_to_support))
+async def set_message_to_support(event: Message) -> None:
+    
+    try:
+        global MESSAGE_TO_SUPPORT_TEXT
+        text = str(event.message.message)
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.message_to_support_text = text
+            MESSAGE_TO_SUPPORT_TEXT = text
+            session.commit()
+            
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+        raise StopPropagation
+
 
 # NewMessage handler, change support channel
 @client.on(event=NewMessage(incoming=True, pattern=r"^(?:https://telegram\.me/|https://t\.me/|t\.me/|telegram\.me/|@)[A-Za-z0-9_+]+", func=filter_set_support_channel))
