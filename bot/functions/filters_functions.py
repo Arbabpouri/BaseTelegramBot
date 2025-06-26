@@ -5,6 +5,7 @@ from models import UserModel
 from settings.database import SessionLocal
 from functions.step_functions import get_user_step, Parts
 from buttons.inline_buttons import InlineButtonsData
+from settings.config import FACTORS_CHANNEL_ID
 
 # endregion
 
@@ -242,7 +243,8 @@ async def filter_get_number_for_deposit_card(event) -> bool:
     )
 
 async def filter_get_factor_for_deposit_card(event) -> bool:
-    if not event.is_private and not isinstance(event.media, MessageMediaPhoto):
+
+    if not event.is_private or not isinstance(event.media, MessageMediaPhoto):
         return False
     user_step = get_user_step(event.sender_id)
     return (
@@ -251,18 +253,20 @@ async def filter_get_factor_for_deposit_card(event) -> bool:
     )
 
 async def filter_acc_factor(event) -> bool:
+    
     return (
-        event.is_private and
+        event.is_channel and
+        event.original_update.peer.channel_id == FACTORS_CHANNEL_ID and
         str(event.data.decode()).startswith(InlineButtonsData.ACC_FACTOR.decode()) and 
-        await filter_admin_move(event)
+        await user_is_admin(event.sender_id)
     )
 
 async def filter_reject_factor(event) -> bool:
     return (
-        event.is_private and
+        event.is_channel and
+        event.original_update.peer.channel_id == FACTORS_CHANNEL_ID and
         str(event.data.decode()).startswith(InlineButtonsData.REJECT_FACTOR.decode()) and 
-        await filter_admin_move(event)
+        await user_is_admin(event.sender_id)
     )
-
 
 # endregion

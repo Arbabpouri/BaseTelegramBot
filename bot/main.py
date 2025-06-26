@@ -1,11 +1,11 @@
 import os
 import logging
-from settings.database import create_tables, default_data
+from settings.database import default_data
 from handlers import *
 
 def main():
 
-    logging.basicConfig(filename="log.txt", filemode="a",format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+    logging.basicConfig(filename="log.log", filemode="a",format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
     logger = logging.getLogger(__name__)
 
     print("Bot Runned")
@@ -16,7 +16,7 @@ def check_db() -> None:
 
     if not os.path.exists('database.db'):
         print('database not found')
-        create_tables()
+        exit(1)
     default_data()
         
 

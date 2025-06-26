@@ -39,11 +39,12 @@ class InlineButtonsData:
     JOINED_IN_CHANNEL = b"JOINED_IN_CHANNEL_"
     BACK_TO_ADMIN = b"BACK_TO_ADMIN"
     BACK_TO_ADMIN_SETTING = b"BACK_TO_ADMIN_SETTING"
+    BACK_TO_CONFIGS_SETTING = b"BACK_TO_CONFIGS_SETTING"
     CANCEL_ADMIN = b"CANCEL_ADMIN"
     CANCEL_USER = b"CANCEL_USER"
     MESSAGE_TO_SUPPORT_CONFIRM_RULES = b"MESSAGE_TO_SUPPORT_CONFIRM_RULES"
-    ACC_FACTOR = b"ACC_FACTOR"
-    REJECT_FACTOR = b"REJECT_FACTOR"
+    ACC_FACTOR = b"ACC_FACTOR_"
+    REJECT_FACTOR = b"REJECT_FACTOR_"
     
     acc_factor = lambda factor_id: f"{InlineButtonsData.ACC_FACTOR.decode()}{factor_id}".encode()
     reject_factor = lambda factor_id: f"{InlineButtonsData.REJECT_FACTOR.decode()}{factor_id}".encode()
@@ -66,8 +67,8 @@ class InlineButtonString:
     DELETE_CHANNEL = "➖| حذف کانال"
     SEND_TO_USER = "📩|پیام به کاربر|👤"
     SEND_TO_USERS = "📩|پیام به کاربران|👥"
-    FORWARD_TO_USER = "⏩|پیام به کاربر|👤"
-    FORWARD_TO_USERS = "⏩|پیام به کاربران|👥"
+    FORWARD_TO_USER = "⏩|فوروارد به کاربر|👤"
+    FORWARD_TO_USERS = "⏩|فوروارد به کاربران|👥"
     BAN_USER = "❌| بن کردن کاربر"
     UNBAN_USER = "✅|  انبن کردن کاربر"
     SHOW_USER_INFO = "👀| مشخصات کاربر"
@@ -145,6 +146,10 @@ class InlineButtons:
             case BackToEnum.ADMIN_SETTING:
                 text = InlineButtonString.BACK
                 data = InlineButtonsData.BACK_TO_ADMIN_SETTING
+            
+            case BackToEnum.BOT_SETTINGS_PANEL:
+                text = InlineButtonString.BACK
+                data = InlineButtonsData.BACK_TO_CONFIGS_SETTING
             
             case _:
                 text = InlineButtonString.BACK
@@ -235,8 +240,8 @@ class InlineButtons:
             Button.inline(text=InlineButtonString.CHANGE_REFERRAL_SETTINGS, data=InlineButtonsData.CHANGE_REFERRAL_SETTINGS),
         ),
         (
-            back_to(back_to=BackToEnum.ADMIN_PANEL)
-        )
+            back_to(back_to=BackToEnum.ADMIN_PANEL),
+        ),
     )
 
 

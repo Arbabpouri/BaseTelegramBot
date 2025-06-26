@@ -3,14 +3,14 @@ from telethon import Button
 
 class TextButtonsString:
     MY_ACCOUNT = "🔐| حساب من |🔐"
-    DEPOSIT_PANEL = "💳|افزایش موجودی|💳"
+    DEPOSIT_PANEL = "💰|افزایش موجودی|💰"
     RULES = "⚖️|قوانین|⚖️"
-    HELP = "🕵️‍♂️|چطور اعتماد کنم؟|🕵️‍♂️"
+    HELP = "🕵️‍♂️|راهنما|🕵️‍♂️"
     CONTACT_US = "☎️|ارتباط با پشتیبانی|☎️"
     REFERRAL = "👥|زیر مجموعه گیری|👥"
     BACK_TO_START = "🔙|بازگشت به منو|🔙"
     DEPOSIT_WITH_CARD = "💳|کارت به کارت|💳"
-    CANCEL_USER = "❌ لفو عملیات"
+    CANCEL_USER = "🏠"
 
 
 class TextButtons:

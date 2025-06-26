@@ -1,9 +1,10 @@
 from typing import Iterable
 from models.channel_model import ChannelModel
-from models.user_model import UserModel
 from models.deposit_model import DepositModel
-from settings.config import BOT_USERNAME, REFERRAL_BONUS, ENTRY_PRIZE, CARD_INFO
+from models.user_model import UserModel
+from settings.config import BOT_USERNAME, ConfigVariableChangable
 
+class DepositModel(): ...
 
 # region functions
 
@@ -24,11 +25,11 @@ def my_account(user: UserModel) -> str:
 
 def referral_banner(user_id: int) -> str:
     return (
-        "⚠️ با تاس🎲 انداختن پول در بیار!\n\n"
+        "زیر مجموعه بگیر و پیشرفت کن ⚡👽\n\n"
 
-        "ربات زیر با تاس🎲 انداختن پول میده باورت میشه؟ :)\n\n"
+        "💰 با دعوت کردن دوستات هم تو جایزه بگیر هم اون\n\n"
 
-        f"🎁 به کاربرای جدید هم {ENTRY_PRIZE:,} تومان هدیه خوش آمدگویی میده از دستش نده 🥳👇\n\n"
+        f"🎁 به کاربرای جدید هم {ConfigVariableChangable.ENTRY_PRIZE:,} تومان هدیه خوش آمدگویی میده از دستش نده 🥳👇\n\n"
 
         f"https://t.me/{BOT_USERNAME}/?start={user_id}"
     )
@@ -36,7 +37,7 @@ def referral_banner(user_id: int) -> str:
 
 def referral_reply(user: UserModel) -> str:
     return (
-        f"⚠️ بنر بالا را برای دوستانتان ارسال کنید و به ازای هر شخصی که با لینک شما در ربات عضو شود {REFERRAL_BONUS:,} تومان اعتبار هدیه دریافت خواهید کرد.\n\n"
+        f"⚠️ بنر بالا را برای دوستانتان ارسال کنید و به ازای هر شخصی که با لینک شما در ربات عضو شود {ConfigVariableChangable.REFERRAL_BONUS:,} تومان اعتبار هدیه دریافت خواهید کرد.\n\n"
 
         f"👥 تعداد زیرمجموعه شما: {len(user.user_referrals)}"
     )
@@ -105,13 +106,13 @@ def send_factor_to_admin(factor: DepositModel) -> str:
     
     if factor.status is True:
         text += (
-            "**🗿 Status :** Accepted ✔\n"
-            f"**👨‍💻 Accepted By :** Admin With User ID : __{factor.acc_or_reject_by_user_id}__"
+            "**🗿 Status :** Accepted ✅\n"
+            f"**👨‍💻 Accepted By Admin With User ID : ** __{factor.acc_or_reject_by_user_id}__"
         )
     elif factor.status is False:
         text += (
             "**👿 Status :** Rejected ❌\n"
-            f"**👨‍💻 Rejected By :** Admin With User ID : __{factor.acc_or_reject_by_user_id}__"
+            f"**👨‍💻 Rejected By Admin With User ID : ** __{factor.acc_or_reject_by_user_id}__"
         )
     else:
         text += (
@@ -130,10 +131,7 @@ def factor_status_to_user(factor_id: str, is_accept: bool) -> str:
 
 # region variable
 
-START_MENU = "🔹 سلام به ربات خوش اومدی, از منوی زیر انتخاب کن :"
-RULES = "متن پیش فرض قوانین"
-HELP = "متن پیش فرض راهنما"
-MESSAGE_TO_SUPPORT_TEXT = "متن پیشفرض توجیح کاربر برای پیام به پشتیبانی"
+
 ADMIN_PANEL = "💢 به پنل ادمین خوش آمدید"
 CONTACT_US = "💬 تنها جهت پیگیری برداشتتان پیام دهید👇"
 SELECT = "⭕️ یک مورد را انتخاب کنید👇"
@@ -165,7 +163,18 @@ JOIN_TO_CHANNELS = "⚠ برای فعالیت در ربات باید عضو کا
 NOT_SEND = "🧶 پیام ارسال نشد, احتمالا ربات را بلاک کرده است"
 SENDED = "✨ پیام با موفقیت ارسال شد"
 NUMBER_FOR_DEPOSIT_CARD = "💳 مقداری که میخواهید شارژ کنید را فقط به صورت عددی و به تومان وارد کنید."
-FACTOR_FOR_DEPOSIT_CARD = f"📸💳 لطفا مبلغ ذکر شده را به شماره کارت زیر ارسال کرده, سپس **اسکرین شات** واریزی را برای ما ارسال کنید\n\n{CARD_INFO}\n"
+FACTOR_FOR_DEPOSIT_CARD = f"📸💳 لطفا مبلغ ذکر شده را به شماره کارت زیر ارسال کرده, سپس **اسکرین شات** واریزی را برای ما ارسال کنید\n\n{ConfigVariableChangable.CARD_INFO}\n"
 FACTOR_NOT_FOUND = "❌ این فاکتور در لیست فاکتور های ذخیره شده وجود ندارد"
+SEND_AMOUNT = "⚡ عالیه حالا مقداری که میخوای رو وارد کن"
+# endregion
+
+
+# region variable for change
+
+class StringsVariableChangable:
+    START_MENU = "🔹 سلام به ربات خوش اومدی, از منوی زیر انتخاب کن :"
+    RULES = "متن پیش فرض قوانین"
+    HELP = "متن پیش فرض راهنما"
+    MESSAGE_TO_SUPPORT_TEXT = "متن پیشفرض توجیح کاربر برای پیام به پشتیبانی"
 
 # endregion

@@ -22,6 +22,7 @@ from settings.strings import (
     ERROR, ENTER_NUMBER,
     NOT_SEND,
     SENDED,
+    SEND_AMOUNT,
     increase_user_balance,
     reduce_user_balance,
     user_info as user_info_str, 
@@ -92,7 +93,7 @@ async def increase_user_balance_set_step(event: CallbackQuery.Event) -> None:
     try:
         
         set_step(event.sender_id, Parts.GET_USER_FOR_INCREASE_BALANCE)
-        await event.reply(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
+        await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         raise StopPropagation
@@ -105,7 +106,7 @@ async def reduce_user_balance_set_step(event: CallbackQuery.Event) -> None:
     try:
         
         set_step(event.sender_id, Parts.GET_USER_FOR_REDUCE_BALANCE)
-        await event.reply(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
+        await event.edit(ENTER_USER_ID, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
         raise StopPropagation
@@ -203,11 +204,11 @@ async def get_user_for_work(event: Message) -> None:
                 
                 set_step(
                     user_id=event.sender_id,
-                    step=Parts.INCREASE_USER_BALANCE if user_step == Parts.GET_USER_FOR_INCREASE_BALANCE else Parts.REDUCE_USER_BALANCE,
+                    step=Parts.INCREASE_USER_BALANCE if user_step.step == Parts.GET_USER_FOR_INCREASE_BALANCE else Parts.REDUCE_USER_BALANCE,
                     user_geted=user_id,
                 )
                 
-                await event.reply(ENTER_NUMBER, buttons=InlineButtons.CANCEL_ADMIN)
+                await event.reply(SEND_AMOUNT, buttons=InlineButtons.CANCEL_ADMIN)
             
             else:
                 await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)

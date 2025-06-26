@@ -6,9 +6,9 @@ from telethon.types import PeerUser, PeerChannel
 from telethon.errors import UserNotParticipantError, ChatAdminRequiredError, ChannelPrivateError
 from settings.database import SessionLocal
 from typing import Optional
-from models import ChannelModel, UserModel, ConfigsModel
+from models import ChannelModel, UserModel
 from settings.client import client
-from settings.config import CREATOR_USER_ID
+from settings.config import CREATOR_USER_ID, ConfigVariableChangable
 from settings.strings import channel_deleted, JOIN_TO_CHANNELS, referral_bonus
 from buttons.url_buttons import UrlButtons
 # endregion
@@ -80,12 +80,11 @@ async def check_user(user_id: int, invited_by_user_id: int | None = None) -> boo
             return False
         
         if is_joined and invited_by_user_id and not user.referral_active:
-            config = session.query(ConfigsModel).first()
             user.referral_active = True
-            invited_by_user_id.balance += config.referral_bonus
+            invited_by_user_id.balance += ConfigVariableChangable.REFERRAL_BONUS
         
             try:
-                await client.send_message(PeerUser(invited_by_user_id.user_id), referral_bonus(user_id, config.referral_bonus), parse_mode='html')
+                await client.send_message(PeerUser(invited_by_user_id.user_id), referral_bonus(user_id, ConfigVariableChangable.REFERRAL_BONUS), parse_mode='html')
             except: pass
             session.commit()
             

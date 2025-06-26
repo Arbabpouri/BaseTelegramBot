@@ -3,9 +3,10 @@ from telethon.custom import Message
 from buttons.inline_buttons import InlineButtonsData
 from buttons.text_buttons import TextButtons
 from buttons.commands import Commands
-from settings.strings import START_MENU
+from settings.strings import StringsVariableChangable
 from settings.client import client
 from functions.check_user import check_user
+from functions.step_functions import delete_step
 
 
 # CallbackQuery handler, show send message panel
@@ -27,7 +28,7 @@ async def check_user_inline(event: CallbackQuery.Event) -> None:
             raise StopPropagation
         
         if data.startswith(InlineButtonsData.JOINED_IN_CHANNEL.decode()):
-            await event.respond(START_MENU, buttons=TextButtons.START_MENU)
+            await event.respond(StringsVariableChangable.START_MENU, buttons=TextButtons.START_MENU)
             raise StopPropagation
     
     except Exception as e:
@@ -45,16 +46,17 @@ async def check_user_text(event: Message) -> None:
         text = str(event.message.message)
         if text.startswith(f"{Commands.START} "):
             
-            await event.delete()
+            delete_step(event.sender_id)
             invited_by = text.split(" ")[-1]
-            invited_by = int(invited_by) if invited_by else None
-    
+            invited_by = int(invited_by) if invited_by and invited_by != event.sender_id else None
+            
         if not await check_user(event.sender_id, invited_by):
             raise StopPropagation
         
         if text.startswith(Commands.START):
-            await event.respond(START_MENU, buttons=TextButtons.START_MENU)
+            delete_step(event.sender_id)
+            await event.respond(StringsVariableChangable.START_MENU, buttons=TextButtons.START_MENU)
             raise StopPropagation
             
-    finally:
-        pass
+    except Exception as e:
+        print(e)

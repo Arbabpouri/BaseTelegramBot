@@ -6,8 +6,8 @@ from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from buttons.url_buttons import UrlButtons
 from functions.filters_functions import filter_user_move
-from settings.strings import RULES, HELP, CONTACT_US, MESSAGE_TO_SUPPORT_TEXT, SELECT, referral_reply, referral_banner
-from settings.config import REFERRAL_IMAGE_ADDRESS, SUPPORT_CHANNEL_URL
+from settings.strings import CONTACT_US, SELECT, referral_reply, referral_banner, StringsVariableChangable
+from settings.config import REFERRAL_IMAGE_ADDRESS, ConfigVariableChangable
 from settings.client import client
 from settings.database import SessionLocal, UserModel
 
@@ -38,7 +38,7 @@ async def rules(event: Message) -> None:
     
     try:
         
-        await event.reply(RULES, buttons=TextButtons.START_MENU)
+        await event.reply(StringsVariableChangable.RULES, buttons=TextButtons.START_MENU)
     
     finally:
         raise StopPropagation
@@ -49,7 +49,7 @@ async def rules(event: Message) -> None:
 async def help(event: Message) -> None:
     
     try:
-        await event.reply(HELP, buttons=await UrlButtons.support_channel(SUPPORT_CHANNEL_URL))
+        await event.reply(StringsVariableChangable.HELP, buttons=await UrlButtons.support_channel(ConfigVariableChangable.SUPPORT_CHANNEL_URL))
     
     finally:
         raise StopPropagation
@@ -60,7 +60,7 @@ async def help(event: Message) -> None:
 async def contact_us(event: Message) -> None:
     
     try:
-        await event.reply(MESSAGE_TO_SUPPORT_TEXT, buttons=InlineButtons.MESSAGE_TO_SUPPORT)
+        await event.reply(StringsVariableChangable.MESSAGE_TO_SUPPORT_TEXT, buttons=InlineButtons.MESSAGE_TO_SUPPORT)
     
     finally:
         raise StopPropagation

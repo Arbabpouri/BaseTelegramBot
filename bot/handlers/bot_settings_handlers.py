@@ -15,22 +15,19 @@ from functions.filters_functions import (
     filter_set_card_info,
 )
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
+from settings import strings
 from settings.strings import (
-    START_MENU,
-    RULES,
-    HELP,
-    MESSAGE_TO_SUPPORT_TEXT,
     SELECT,
     ENTER_NUMBER,
     ENTER_TEXT,
     ENTER_URL,
     UPDATED,
-    ERROR
+    ERROR,
+    StringsVariableChangable
 )
 from settings.client import client
 from settings.database import SessionLocal, ConfigsModel
-from settings.config import ENTRY_PRIZE, REFERRAL_BONUS, SUPPORT_CHANNEL_URL, CARD_INFO
-
+from settings.config import ConfigVariableChangable
 # endregion
 
 
@@ -43,6 +40,9 @@ async def config_settings_panel(event: CallbackQuery.Event) -> None:
     try:
     
         await event.edit(SELECT, buttons=InlineButtons.CONFIGS_PANEL)
+    
+    except Exception as e:
+        print(e)
         
     finally:
         raise StopPropagation
@@ -187,12 +187,11 @@ async def change_card_info_set_step(event: CallbackQuery.Event) -> None:
 async def set_rule(event: Message) -> None:
     
     try:
-        global RULES
         text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.rules_text = text
-            RULES = text
+            StringsVariableChangable.RULES = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -211,12 +210,11 @@ async def set_rule(event: Message) -> None:
 async def set_help(event: Message) -> None:
     
     try:
-        global HELP
         text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.help_text = text
-            HELP = text
+            StringsVariableChangable.HELP = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -235,12 +233,11 @@ async def set_help(event: Message) -> None:
 async def set_start_menu(event: Message) -> None:
     
     try:
-        global START_MENU
         text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.start_menu_text = text
-            START_MENU = text
+            StringsVariableChangable.START_MENU = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -259,12 +256,11 @@ async def set_start_menu(event: Message) -> None:
 async def set_message_to_support(event: Message) -> None:
     
     try:
-        global MESSAGE_TO_SUPPORT_TEXT
         text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.message_to_support_text = text
-            MESSAGE_TO_SUPPORT_TEXT = text
+            StringsVariableChangable.MESSAGE_TO_SUPPORT_TEXT = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -283,12 +279,11 @@ async def set_message_to_support(event: Message) -> None:
 async def set_card_info(event: Message) -> None:
     
     try:
-        global CARD_INFO
         text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.card_info = text
-            CARD_INFO = text
+            ConfigVariableChangable.CARD_INFO = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -307,12 +302,11 @@ async def set_card_info(event: Message) -> None:
 async def set_support_channel(event: Message) -> None:
     
     try:
-        global SUPPORT_CHANNEL_URL
         text = str(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.support_channel_url = text
-            SUPPORT_CHANNEL_URL = text
+            ConfigVariableChangable.SUPPORT_CHANNEL_URL = text
             session.commit()
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
         
@@ -330,12 +324,11 @@ async def set_support_channel(event: Message) -> None:
 async def set_referral_bonus(event: Message) -> None:
     
     try:
-        global REFERRAL_BONUS
         num = int(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.referral_bonus = num
-            REFERRAL_BONUS = num
+            ConfigVariableChangable.REFERRAL_BONUS = num
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
@@ -354,12 +347,11 @@ async def set_referral_bonus(event: Message) -> None:
 async def set_entry_prize(event: Message) -> None:
     
     try:
-        global ENTRY_PRIZE
         num = int(event.message.message)
         with SessionLocal() as session:
             config = session.query(ConfigsModel).first()
             config.entry_prize = num
-            ENTRY_PRIZE = num
+            ConfigVariableChangable.ENTRY_PRIZE = num
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)

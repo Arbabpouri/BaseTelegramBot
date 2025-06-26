@@ -1,7 +1,7 @@
 # region imports
 
 from telethon.events import CallbackQuery, NewMessage, StopPropagation
-from telethon.types import PeerUser, PeerChannel
+from telethon.types import PeerUser, PeerChannel, User
 from telethon.custom import Message 
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
@@ -13,7 +13,6 @@ from settings.strings import (
     NUMBER_FOR_DEPOSIT_CARD,
     FACTOR_FOR_DEPOSIT_CARD,
     FACTOR_NOT_FOUND,
-    USER_NOT_EXIST,
     factor_geted,
     send_factor_to_admin,
     factor_status_to_user,
@@ -37,11 +36,10 @@ from settings.database import UserModel, DepositModel, SessionLocal
 async def acc_factor(event: CallbackQuery.Event) -> None:
     
     try:
-        
-        factor_id = str(event.data.decode()).replace(InlineButtonsData.ACC_FACTOR, "")
+        factor_id = str(event.data.decode()).replace(InlineButtonsData.ACC_FACTOR.decode(), "")
         
         with SessionLocal() as session:
-            factor = session.query(DepositModel).join(UserModel).filter_by(factor_id=factor_id).first()
+            factor = session.query(DepositModel).filter(DepositModel.factor_id == factor_id).first()
             
             if not factor:
                 await event.answer(FACTOR_NOT_FOUND, alert=True)
@@ -70,11 +68,10 @@ async def acc_factor(event: CallbackQuery.Event) -> None:
 async def reject_factor(event: CallbackQuery.Event) -> None:
     
     try:
-        
-        factor_id = str(event.data.decode()).replace(InlineButtonsData.REJECT_FACTOR, "")
+        factor_id = str(event.data.decode()).replace(InlineButtonsData.REJECT_FACTOR.decode(), "")
         
         with SessionLocal() as session:
-            factor = session.query(DepositModel).join(UserModel).filter_by(factor_id=factor_id).first()
+            factor = session.query(DepositModel).filter(DepositModel.factor_id == factor_id).first()
             
             if not factor:
                 await event.answer(FACTOR_NOT_FOUND, alert=True)
@@ -135,16 +132,18 @@ async def get_factor_for_deposit_with_card(event: Message) -> None:
     try:
         
         user_step = get_user_step(event.sender_id)
-        sender = await event.get_sender()
+        sender: User = await event.get_sender()
+        
         with SessionLocal() as session:
-            # TODO
+            
             factor = DepositModel(
                 username=sender.username,
-                account_name=sender.firstname,
+                account_name=sender.first_name,
                 user_id=event.sender_id, 
                 amount=user_step.number_geted
             )
             session.add(factor)
+            session.commit()
             
             await client.send_message(
                 entity=PeerChannel(FACTORS_CHANNEL_ID), 
@@ -154,10 +153,11 @@ async def get_factor_for_deposit_with_card(event: Message) -> None:
             )
             
             await event.reply(factor_geted(factor_id=factor.factor_id), buttons=TextButtons.START_MENU)
-            session.commit()
+            
     
     except Exception as e:
-        await event.reply(ERROR)
+        print(e)
+        await event.reply(ERROR, buttons=TextButtons.START_MENU)
         
     finally:
         delete_step(event.sender_id)

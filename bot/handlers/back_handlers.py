@@ -37,7 +37,7 @@ async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
     
 
 # CallbackQuery handler, back to bot settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN_SETTING, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_CONFIGS_SETTING, func=filter_admin_move))
 async def back_to_bot_setting(event: CallbackQuery.Event) -> None:
     
     try:
