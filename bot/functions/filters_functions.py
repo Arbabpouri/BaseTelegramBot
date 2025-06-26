@@ -85,6 +85,16 @@ async def filter_set_message_to_support(event) -> bool:
         await user_is_admin(event.sender_id)
     )
 
+async def filter_set_card_info(event) -> bool:
+    if not event.is_private:
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step == Parts.CHANGE_CARD_INFO and 
+        await user_is_admin(event.sender_id)
+    )
+
 async def filter_set_support_channel(event) -> bool:
     if not event.is_private:
         return False

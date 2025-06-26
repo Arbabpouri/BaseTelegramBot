@@ -12,6 +12,7 @@ from functions.filters_functions import (
     filter_set_message_to_support,
     filter_set_support_channel,
     filter_set_referral_bonus,
+    filter_set_card_info,
 )
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import (
@@ -28,7 +29,7 @@ from settings.strings import (
 )
 from settings.client import client
 from settings.database import SessionLocal, ConfigsModel
-from settings.config import ENTRY_PRIZE, REFERRAL_BONUS, SUPPORT_CHANNEL_URL
+from settings.config import ENTRY_PRIZE, REFERRAL_BONUS, SUPPORT_CHANNEL_URL, CARD_INFO
 
 # endregion
 
@@ -151,11 +152,24 @@ async def change_start_menu_set_step(event: CallbackQuery.Event) -> None:
 
 # CallbackQuery handler, set step for change message to support text set step
 @client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_MESSAGE_TO_SUPPORT_TEXT, func=filter_admin_move))
-async def change_start_menu_set_step(event: CallbackQuery.Event) -> None:
+async def change_message_to_support_set_step(event: CallbackQuery.Event) -> None:
     
     try:
     
         set_step(user_id=event.sender_id, step=Parts.CHANGE_MESSAGE_TO_SUPPORT)
+        await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
+    
+    finally:
+        raise StopPropagation
+
+
+# CallbackQuery handler, set step for change card info text set step
+@client.on(event=CallbackQuery(data=InlineButtonsData.CHANGE_CARD_INFO, func=filter_admin_move))
+async def change_card_info_set_step(event: CallbackQuery.Event) -> None:
+    
+    try:
+    
+        set_step(user_id=event.sender_id, step=Parts.CHANGE_CARD_INFO)
         await event.edit(ENTER_TEXT, buttons=InlineButtons.CANCEL_ADMIN)
     
     finally:
@@ -240,7 +254,7 @@ async def set_start_menu(event: Message) -> None:
         raise StopPropagation
    
 
-# NewMessage handler, change start menu text
+# NewMessage handler, change message to support text
 @client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_message_to_support))
 async def set_message_to_support(event: Message) -> None:
     
@@ -251,6 +265,30 @@ async def set_message_to_support(event: Message) -> None:
             config = session.query(ConfigsModel).first()
             config.message_to_support_text = text
             MESSAGE_TO_SUPPORT_TEXT = text
+            session.commit()
+            
+        await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    except:
+        await event.reply(ERROR, buttons=InlineButtons.CONFIGS_PANEL)
+        
+    finally:
+        
+        delete_step(user_id=event.sender_id)
+        raise StopPropagation
+
+
+# NewMessage handler, change card info text
+@client.on(event=NewMessage(incoming=True, pattern=".*", func=filter_set_card_info))
+async def set_card_info(event: Message) -> None:
+    
+    try:
+        global CARD_INFO
+        text = str(event.message.message)
+        with SessionLocal() as session:
+            config = session.query(ConfigsModel).first()
+            config.card_info = text
+            CARD_INFO = text
             session.commit()
             
         await event.reply(UPDATED, buttons=InlineButtons.CONFIGS_PANEL)

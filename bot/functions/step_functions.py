@@ -40,6 +40,7 @@ class Parts:
     GET_USER_FOR_INCREASE_BALANCE = 25
     GET_NUMBER_FOR_DEPOSIT_CARD = 26
     GET_FACTOR_FOR_DEPOSIT_CARD = 27
+    CHANGE_CARD_INFO = 28
     
 
 redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)

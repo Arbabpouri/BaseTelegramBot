@@ -35,6 +35,7 @@ class InlineButtonsData:
     CHANGE_REFERRAL_BONUS = b"CHANGE_REFERRAL_BONUS"
     CHANGE_START_MENU_TEXT = b"CHANGE_START_MENU_TEXT"
     CHANGE_MESSAGE_TO_SUPPORT_TEXT = b"CHANGE_MESSAGE_TO_SUPPORT_TEXT"
+    CHANGE_CARD_INFO = b"CHANGE_CARD_INFO"
     JOINED_IN_CHANNEL = b"JOINED_IN_CHANNEL_"
     BACK_TO_ADMIN = b"BACK_TO_ADMIN"
     BACK_TO_ADMIN_SETTING = b"BACK_TO_ADMIN_SETTING"
@@ -80,6 +81,7 @@ class InlineButtonString:
     CHANGE_SUPPORT_CHANNEL = "⚙️| تغییر کانال اعتماد"
     CHANGE_REFERRAL_BONUS = "⚙️| تغییر هزینه زیرمجموعه"
     CHANGE_START_MENU_TEXT = "⚙️| تغییر متن شروع"
+    CHANGE_CARD_INFO = "⚙️| تغییر اطلاعات کارت"
     CHANGE_MESSAGE_TO_SUPPORT_TEXT = "⚙️| تغییر متن پشتیبانی"
     JOINED_IN_CHANNEL = "تایید عضویت ✅"
     I_UNDERSTAND = "⁉ متوجه شدم"
@@ -266,6 +268,9 @@ class InlineButtons:
         ),
         (
             Button.inline(text=InlineButtonString.CHANGE_MESSAGE_TO_SUPPORT_TEXT, data=InlineButtonsData.CHANGE_MESSAGE_TO_SUPPORT_TEXT),
+        ),
+        (
+            Button.inline(text=InlineButtonString.CHANGE_CARD_INFO, data=InlineButtonsData.CHANGE_CARD_INFO),
         ),
         (
             back_to(back_to=BackToEnum.BOT_SETTINGS_PANEL),

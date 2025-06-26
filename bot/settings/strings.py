@@ -2,7 +2,7 @@ from typing import Iterable
 from models.channel_model import ChannelModel
 from models.user_model import UserModel
 from models.deposit_model import DepositModel
-from settings.config import BOT_USERNAME, REFERRAL_BONUS, ENTRY_PRIZE, NAME_OF_CARD, NUMBER_OF_CARD
+from settings.config import BOT_USERNAME, REFERRAL_BONUS, ENTRY_PRIZE, CARD_INFO
 
 
 # region functions
@@ -165,7 +165,7 @@ JOIN_TO_CHANNELS = "⚠ برای فعالیت در ربات باید عضو کا
 NOT_SEND = "🧶 پیام ارسال نشد, احتمالا ربات را بلاک کرده است"
 SENDED = "✨ پیام با موفقیت ارسال شد"
 NUMBER_FOR_DEPOSIT_CARD = "💳 مقداری که میخواهید شارژ کنید را فقط به صورت عددی و به تومان وارد کنید."
-FACTOR_FOR_DEPOSIT_CARD = f"📸💳 لطفا مبلغ ذکر شده را به شماره کارت زیر ارسال کرده, سپس **اسکرین شات** واریزی را برای ما ارسال کنید\n\n__{NUMBER_OF_CARD}__\n**{NAME_OF_CARD}**"
+FACTOR_FOR_DEPOSIT_CARD = f"📸💳 لطفا مبلغ ذکر شده را به شماره کارت زیر ارسال کرده, سپس **اسکرین شات** واریزی را برای ما ارسال کنید\n\n{CARD_INFO}\n"
 FACTOR_NOT_FOUND = "❌ این فاکتور در لیست فاکتور های ذخیره شده وجود ندارد"
 
 # endregion
