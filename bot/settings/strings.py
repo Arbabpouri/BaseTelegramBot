@@ -1,8 +1,8 @@
 from typing import Iterable
 from models.channel_model import ChannelModel
-from models.config_model import ConfigsModel
 from models.user_model import UserModel
-from settings.config import BOT_USERNAME, REFERRAL_BONUS, ENTRY_PRIZE
+from models.deposit_model import DepositModel
+from settings.config import BOT_USERNAME, REFERRAL_BONUS, ENTRY_PRIZE, NAME_OF_CARD, NUMBER_OF_CARD
 
 
 # region functions
@@ -84,6 +84,48 @@ def increase_user_balance(value: float | int) -> str:
 def reduce_user_balance(value: float | int) -> str:
     return f"🎋 کاربر گرامی مقدار {value:,} تومان توسط ادمین از حساب شما کسر شد"
 
+
+def factor_geted(factor_id: str) -> str:
+    return (
+        "♻ فاکتور شما دریافت شد\n"
+        f"🆔 شناسه پرداخت شما : __{factor_id}__\n"
+        "⌛ لطفا تا تایید یا رد توسط ادمین منتظر بمانید و در صورت پاسخ نگرفتن تا 24 ساعت, به پشتیبان اطلاع بدهید"
+    )
+    
+
+def send_factor_to_admin(factor: DepositModel) -> str:
+    text = (
+        "📌 فاکتور پرداخت\n\n"
+        
+        f"**👤 Name :** [{factor.account_name}](tg://user?id={factor.user_id})\n"
+        f"**🆔 UserName :** {factor.username}\n"
+        f"**💰 Amount :** {factor.amount:,}\n"
+        f"**📅 DateTime :** {factor.datetime}\n\n"
+    )
+    
+    if factor.status is True:
+        text += (
+            "**🗿 Status :** Accepted ✔\n"
+            f"**👨‍💻 Accepted By :** Admin With User ID : __{factor.acc_or_reject_by_user_id}__"
+        )
+    elif factor.status is False:
+        text += (
+            "**👿 Status :** Rejected ❌\n"
+            f"**👨‍💻 Rejected By :** Admin With User ID : __{factor.acc_or_reject_by_user_id}__"
+        )
+    else:
+        text += (
+            "**🥶 Status :** Unknown 👽"
+        )
+    
+    return text
+
+
+def factor_status_to_user(factor_id: str, is_accept: bool) -> str:
+    
+    return f"📌 فاکتور ارسالی شما با شناسه __{factor_id}__ توسط ادمین {'✔ تایید' if is_accept else '❌ رد'} شد"
+
+
 # endregion
 
 # region variable
@@ -122,4 +164,8 @@ CHANNEL_ALREADY_EXIST = "⚠ این کانال وجود دارد لطفا کان
 JOIN_TO_CHANNELS = "⚠ برای فعالیت در ربات باید عضو کانال های زیر بشوید"
 NOT_SEND = "🧶 پیام ارسال نشد, احتمالا ربات را بلاک کرده است"
 SENDED = "✨ پیام با موفقیت ارسال شد"
+NUMBER_FOR_DEPOSIT_CARD = "💳 مقداری که میخواهید شارژ کنید را فقط به صورت عددی و به تومان وارد کنید."
+FACTOR_FOR_DEPOSIT_CARD = f"📸💳 لطفا مبلغ ذکر شده را به شماره کارت زیر ارسال کرده, سپس **اسکرین شات** واریزی را برای ما ارسال کنید\n\n__{NUMBER_OF_CARD}__\n**{NAME_OF_CARD}**"
+FACTOR_NOT_FOUND = "❌ این فاکتور در لیست فاکتور های ذخیره شده وجود ندارد"
+
 # endregion

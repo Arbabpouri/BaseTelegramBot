@@ -38,6 +38,8 @@ class Parts:
     REDUCE_USER_BALANCE = 23
     GET_USER_FOR_REDUCE_BALANCE = 24
     GET_USER_FOR_INCREASE_BALANCE = 25
+    GET_NUMBER_FOR_DEPOSIT_CARD = 26
+    GET_FACTOR_FOR_DEPOSIT_CARD = 27
     
 
 redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
@@ -46,14 +48,19 @@ redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
 class UserStep(BaseModel):
     step: int
     user_geted: int | None = None
+    number_geted: int | float | None = None
 
 
-def set_step(user_id: int, step: int, user_geted: int | None = None) -> None:
+def set_step(user_id: int, step: int, user_geted: int | None = None, number_geted: int | float | None = None) -> None:
     data = {
         'step': step,
     }
     if user_geted:
         data['user_geted'] = user_geted
+    
+    if number_geted:
+        data['number_geted'] = number_geted
+
     redis_client.hset(user_id, mapping=data)
 
 

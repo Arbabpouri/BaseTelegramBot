@@ -1,5 +1,6 @@
 # region imports
 
+from telethon.types import MessageMediaPhoto
 from models import UserModel
 from settings.database import SessionLocal
 from functions.step_functions import get_user_step, Parts
@@ -220,5 +221,38 @@ async def filter_reduce_user_balance(event) -> bool:
         user_step.step == Parts.REDUCE_USER_BALANCE and 
         await user_is_admin(event.sender_id)
     )
+
+async def filter_get_number_for_deposit_card(event) -> bool:
+    if not event.is_private:
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step == Parts.GET_NUMBER_FOR_DEPOSIT_CARD
+    )
+
+async def filter_get_factor_for_deposit_card(event) -> bool:
+    if not event.is_private and not isinstance(event.media, MessageMediaPhoto):
+        return False
+    user_step = get_user_step(event.sender_id)
+    return (
+        user_step and
+        user_step.step == Parts.GET_FACTOR_FOR_DEPOSIT_CARD
+    )
+
+async def filter_acc_factor(event) -> bool:
+    return (
+        event.is_private and
+        str(event.data.decode()).startswith(InlineButtonsData.ACC_FACTOR.decode()) and 
+        await filter_admin_move(event)
+    )
+
+async def filter_reject_factor(event) -> bool:
+    return (
+        event.is_private and
+        str(event.data.decode()).startswith(InlineButtonsData.REJECT_FACTOR.decode()) and 
+        await filter_admin_move(event)
+    )
+
 
 # endregion

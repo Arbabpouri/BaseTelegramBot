@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, relationship, mapped_column, backref
 from sqlalchemy import ForeignKey, Integer
 from typing import List
-from settings.database import Base
+from settings.database import Base, DepositModel
 from settings.config import ENTRY_PRIZE
 
 
@@ -14,3 +14,5 @@ class UserModel(Base):
     referral_active: Mapped[bool] = mapped_column(nullable=True, default=None)
     invited_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.user_id"), nullable=True, default=None)
     referrals: Mapped[List["UserModel"]] = relationship('UserModel', remote_side='UserModel.user_id', backref=backref('user_referrals'))
+    factors: Mapped[List["DepositModel"]] = relationship("DepositModel", back_populates='user')
+    

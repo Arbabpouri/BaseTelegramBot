@@ -41,8 +41,11 @@ class InlineButtonsData:
     CANCEL_ADMIN = b"CANCEL_ADMIN"
     CANCEL_USER = b"CANCEL_USER"
     MESSAGE_TO_SUPPORT_CONFIRM_RULES = b"MESSAGE_TO_SUPPORT_CONFIRM_RULES"
+    ACC_FACTOR = b"ACC_FACTOR"
+    REJECT_FACTOR = b"REJECT_FACTOR"
     
-    
+    acc_factor = lambda factor_id: f"{InlineButtonsData.ACC_FACTOR.decode()}{factor_id}".encode()
+    reject_factor = lambda factor_id: f"{InlineButtonsData.REJECT_FACTOR.decode()}{factor_id}".encode()
     delete_channel = lambda channel_id: f"{InlineButtonsData.DELETE_CHANNEL.decode()}{channel_id}".encode()
     joined_in_channel = lambda user_id: f"{InlineButtonsData.JOINED_IN_CHANNEL.decode()}{user_id}".encode()
     
@@ -81,6 +84,8 @@ class InlineButtonString:
     JOINED_IN_CHANNEL = "تایید عضویت ✅"
     I_UNDERSTAND = "⁉ متوجه شدم"
     BACK = "📍 | بازگشت"
+    ACC = "✔ تایید"
+    REJECT = "❌ رد"
 
 
 # all backs enum, using for InlineButtons.back_to
@@ -145,6 +150,14 @@ class InlineButtons:
                 
         
         return Button.inline(text=text, data=data)
+
+
+    @staticmethod
+    def acc_reject_factor(factor_id: int):
+        return (
+            Button.inline(text=InlineButtonString.ACC, data=InlineButtonsData.acc_factor(factor_id)),
+            Button.inline(text=InlineButtonString.REJECT, data=InlineButtonsData.reject_factor(factor_id)),
+        )
 
 
     ADMIN_PANEL = (

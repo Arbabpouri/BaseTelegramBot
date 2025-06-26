@@ -7,4 +7,5 @@ from .cancel_handlers import *
 from .channels_settings import *
 from .send_message_settings import *
 from .start_menu_handlers import *
+from .deposit_handlers import *
 from .users_settings_handlers import *

@@ -9,6 +9,8 @@ class TextButtonsString:
     CONTACT_US = "☎️|ارتباط با پشتیبانی|☎️"
     REFERRAL = "👥|زیر مجموعه گیری|👥"
     BACK_TO_START = "🔙|بازگشت به منو|🔙"
+    DEPOSIT_WITH_CARD = "💳|کارت به کارت|💳"
+    CANCEL_USER = "❌ لفو عملیات"
 
 
 class TextButtons:
@@ -32,9 +34,17 @@ class TextButtons:
 
     DEPOSIT_PLAN = (
         (
+            Button.text(text=TextButtonsString.DEPOSIT_WITH_CARD, resize=True, single_use=True),
+        ),
+        (
             Button.text(text=TextButtonsString.REFERRAL, resize=True, single_use=True),
         ),
         (
             Button.text(text=TextButtonsString.BACK_TO_START, resize=True, single_use=True),
         ),
     )
+
+    CANCEL_USER = (
+        Button.text(text=TextButtonsString.CANCEL_USER, resize=True, single_use=True),
+    )
+    
