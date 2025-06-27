@@ -111,7 +111,7 @@ async def get_message_send_to_users(event: Message) -> None:
         
             for user in users:
                 try:
-                    await func(entity=PeerUser(user.user_id), message=event.message)
+                    await func(PeerUser(user.user_id), event.message)
                     success += 1
                     await asyncio.sleep(0.05)
                 except FloodWaitError as e:
@@ -130,16 +130,24 @@ async def get_user_send_to_user(event: Message) -> None:
     
     try:
     
-        user = int(event.message.message)
+        user_id = int(event.message.message)
+        user_step = get_user_step(event.sender_id)
         
         with SessionLocal() as session:
-            user = session.query(UserModel).filter_by(user_id=user).first()
+            user = session.query(UserModel).filter_by(user_id=user_id).first()
             if user:
-                set_step(user_id=event.sender_id, step=Parts.GET_MESSAGE_SEND_TO_USER)
+                set_step(
+                    user_id=event.sender_id, 
+                    step=Parts.GET_MESSAGE_SEND_TO_USER if user_step.step == Parts.GET_MESSAGE_SEND_TO_USER else Parts.GET_MESSAGE_FORWARD_TO_USER,
+                    user_geted=user_id
+                )
                 await event.reply(ENTER_MESSAGE, buttons=InlineButtons.CANCEL_ADMIN)
             
             else:
                 await event.reply(USER_NOT_EXIST, buttons=InlineButtons.CANCEL_ADMIN)
+    
+    except Exception as e:
+        print(e)
     
     finally:
         raise StopPropagation
@@ -151,11 +159,22 @@ async def get_message_send_to_user(event: Message) -> None:
     try:
     
         try:
+
             user_step = get_user_step(event.sender_id)
-            await client.send_message(PeerUser(user_id=user_step.user_geted), message=event.message)
-            await event.reply(message_sended(1))
-        except:
-            await event.reply(NOT_SEND)
+            
+            if user_step.step == Parts.GET_MESSAGE_SEND_TO_USER:
+            
+                await client.send_message(PeerUser(user_id=user_step.user_geted), message=event.message)
+            
+            else: 
+                await client.forward_messages(PeerUser(user_id=user_step.user_geted), messages=event.message)
+                
+            await event.reply(message_sended(1), buttons=InlineButtons.SEND_PANEL)
+
+        except Exception as e:
+            print(e)
+            await event.reply(NOT_SEND, buttons=InlineButtons.SEND_PANEL)
+
         finally:
             delete_step(user_id=event.sender_id)
 

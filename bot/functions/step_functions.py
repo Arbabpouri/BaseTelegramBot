@@ -41,6 +41,7 @@ class Parts:
     GET_NUMBER_FOR_DEPOSIT_CARD = 26
     GET_FACTOR_FOR_DEPOSIT_CARD = 27
     CHANGE_CARD_INFO = 28
+    GET_MESSAGE_FORWARD_TO_USER = 29
     
 
 redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)

@@ -32,6 +32,8 @@ def default_data() -> None:
         if not configs:
             configs = ConfigsModel()
             session.add(configs)
+        
+        session.commit()
             
         StringsVariableChangable.START_MENU = configs.start_menu_text
         StringsVariableChangable.HELP = configs.help_text
@@ -41,5 +43,3 @@ def default_data() -> None:
         ConfigVariableChangable.REFERRAL_BONUS = configs.referral_bonus
         ConfigVariableChangable.SUPPORT_CHANNEL_URL = configs.support_channel_url
             
-            
-        session.commit()

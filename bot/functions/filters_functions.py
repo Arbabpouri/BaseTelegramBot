@@ -169,7 +169,7 @@ async def filter_get_message_send_user(event) -> bool:
     user_step = get_user_step(event.sender_id)
     return (
         user_step and
-        user_step.step == Parts.GET_MESSAGE_SEND_TO_USER and 
+        user_step.step in (Parts.GET_MESSAGE_SEND_TO_USER, Parts.GET_MESSAGE_FORWARD_TO_USER) and 
         await user_is_admin(event.sender_id)
     )
 

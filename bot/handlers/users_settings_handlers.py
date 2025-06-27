@@ -19,7 +19,7 @@ from settings.strings import (
     SELECT, 
     UPDATED,
     USER_NOT_EXIST,
-    ERROR, ENTER_NUMBER,
+    ERROR,
     NOT_SEND,
     SENDED,
     SEND_AMOUNT,
