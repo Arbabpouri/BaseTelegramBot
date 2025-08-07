@@ -1,6 +1,7 @@
 # region imports
 
 from telethon.types import MessageMediaPhoto
+from typing import Optional, List
 from models import UserModel
 from settings.database import SessionLocal
 from functions.step_functions import get_user_step, Parts
@@ -11,262 +12,56 @@ from settings.config import FACTORS_CHANNEL_ID
 
 # region rules
 
-async def user_is_admin(user_id: int) -> bool:
-    
-    with SessionLocal() as session:
-        return bool(session.query(UserModel).filter_by(user_id=int(user_id), is_admin=True).first())
-    
-async def filter_user_move(event) -> bool:
-    return event.is_private and not get_user_step(event.sender_id)
+def set_filter(
+    event,
+    is_private_chat: Optional[bool] = True,
+    is_group_chat: Optional[bool] = False,
+    is_channel_chat: Optional[bool] = False,
+    is_admin: Optional[bool] = False,
+    data_or_text: Optional[str] = None,
+    startswith: Optional[str] = None,
+    endswith: Optional[str] = None,
+    user_step: Optional[int | List[int]] = None,
+) -> bool:
 
-async def filter_admin_move(event) -> bool:
-    return (
-        event.is_private and 
-        await user_is_admin(user_id=event.sender_id) and 
-        not get_user_step(event.sender_id)
-    )
+    try:
 
-async def filter_add_admin(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.ADD_ADMIN and 
-        await user_is_admin(event.sender_id)
-    )
-    
-async def filter_del_admin(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.DELETE_ADMIN and 
-        await user_is_admin(event.sender_id)
-    )
+        if (
+            (is_private_chat and not event.is_private) or
+            (is_group_chat and not event.is_group) or
+            (is_channel_chat and not event.is_channel)
+        ):
+            return False
+        
+        if is_admin:
+            with SessionLocal() as session:
+                if not session.query(UserModel).filter_by(user_id=event.sender_id, is_admin=True).first():
+                    return False
+        
+        if data_or_text:
 
-async def filter_set_rule(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_RULES_TEXT and 
-        await user_is_admin(event.sender_id)
-    )
+            if startswith:
+                if not data_or_text.startswith(startswith):
+                    return False
+            
+            if endswith:
+                if not data_or_text.endswith(startswith):
+                    return False
+                
+        if not (user_step is None):
 
-async def filter_set_help(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_HELP_TEXT and 
-        await user_is_admin(event.sender_id)
-    )
+            if not isinstance(user_step, list):
+                user_step = [user_step]
 
-async def filter_set_start_menu(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_START_MENU and 
-        await user_is_admin(event.sender_id)
-    )
+            user_step_info = get_user_step(event.sender_id)
 
-async def filter_set_message_to_support(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_MESSAGE_TO_SUPPORT and 
-        await user_is_admin(event.sender_id)
-    )
+            if not user_step_info or user_step_info.step not in user_step:
+                return False
+            
+        return True
 
-async def filter_set_card_info(event) -> bool:
-    if not event.is_private:
+    except Exception as e:
+        print('error in filters :', e)
         return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_CARD_INFO and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_set_support_channel(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_SUPPORT_CHANNEL and 
-        await user_is_admin(event.sender_id)
-    )
-    
-async def filter_set_referral_bonus(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_REFERRAL_BONUS and 
-        await user_is_admin(event.sender_id)
-    )
-    
-async def filter_set_entry_prize(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.CHANGE_ENTERY_PRIZE and 
-        await user_is_admin(event.sender_id)
-    )
-    
-async def filter_add_channel(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.ADD_CHANNEL and 
-        await user_is_admin(event.sender_id)
-    )  
-
-async def filter_delete_channel(event) -> bool:
-    return (
-        event.is_private and
-        str(event.data.decode()).startswith(InlineButtonsData.DELETE_CHANNEL.decode()) and 
-        await filter_admin_move(event)
-    )
-
-async def filter_get_message_send_users(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step in (Parts.SEND_TO_USERS, Parts.FORWARD_TO_USERS) and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_get_user_send(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step in (Parts.SEND_TO_USER, Parts.FORWARD_TO_USER) and 
-        await user_is_admin(event.sender_id)
-    )
-    
-async def filter_get_message_send_user(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step in (Parts.GET_MESSAGE_SEND_TO_USER, Parts.GET_MESSAGE_FORWARD_TO_USER) and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_ban_user(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.BAN_USER and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_unban_user(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.UNBAN_USER and 
-        await user_is_admin(event.sender_id)
-    )
-    
-async def filter_user_info(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.SHOW_USER_INFO and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_get_user_for_work(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step in (Parts.GET_USER_FOR_INCREASE_BALANCE, Parts.GET_USER_FOR_REDUCE_BALANCE) and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_increase_user_balance(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.INCREASE_USER_BALANCE and 
-        await user_is_admin(event.sender_id)
-    )
-    
-async def filter_reduce_user_balance(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.REDUCE_USER_BALANCE and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_get_number_for_deposit_card(event) -> bool:
-    if not event.is_private:
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.GET_NUMBER_FOR_DEPOSIT_CARD
-    )
-
-async def filter_get_factor_for_deposit_card(event) -> bool:
-
-    if not event.is_private or not isinstance(event.media, MessageMediaPhoto):
-        return False
-    user_step = get_user_step(event.sender_id)
-    return (
-        user_step and
-        user_step.step == Parts.GET_FACTOR_FOR_DEPOSIT_CARD
-    )
-
-async def filter_acc_factor(event) -> bool:
-    
-    return (
-        event.is_channel and
-        event.original_update.peer.channel_id == FACTORS_CHANNEL_ID and
-        str(event.data.decode()).startswith(InlineButtonsData.ACC_FACTOR.decode()) and 
-        await user_is_admin(event.sender_id)
-    )
-
-async def filter_reject_factor(event) -> bool:
-    return (
-        event.is_channel and
-        event.original_update.peer.channel_id == FACTORS_CHANNEL_ID and
-        str(event.data.decode()).startswith(InlineButtonsData.REJECT_FACTOR.decode()) and 
-        await user_is_admin(event.sender_id)
-    )
 
 # endregion

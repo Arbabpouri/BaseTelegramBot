@@ -17,14 +17,8 @@ from settings.strings import (
     send_factor_to_admin,
     factor_status_to_user,
 )
-from functions.filters_functions import (
-    filter_user_move,
-    filter_get_factor_for_deposit_card,
-    filter_get_number_for_deposit_card,
-    filter_acc_factor,
-    filter_reject_factor,
-)
-from settings.database import UserModel, DepositModel, SessionLocal
+from functions.filters_functions import set_filter
+from settings.database import DepositModel, SessionLocal
 
 # endregion
 
@@ -32,7 +26,7 @@ from settings.database import UserModel, DepositModel, SessionLocal
 
 
 # CallBackQuery Handler, Acc Factor
-@client.on(event=CallbackQuery(func=filter_acc_factor))
+@client.on(event=CallbackQuery(func=lambda e: set_filter(e, is_private_chat=False, is_channel_chat=True, is_admin=True, data_or_text=str(e.data.decode()), startswith=InlineButtonsData.ACC_FACTOR.decode())))
 async def acc_factor(event: CallbackQuery.Event) -> None:
     
     try:
@@ -64,7 +58,7 @@ async def acc_factor(event: CallbackQuery.Event) -> None:
 
 
 # CallBackQuery Handler, Reject Factor
-@client.on(event=CallbackQuery(func=filter_reject_factor))
+@client.on(event=CallbackQuery(func=lambda e: set_filter(e, is_private_chat=False, is_channel_chat=True, is_admin=True, data_or_text=str(e.data.decode()), startswith=InlineButtonsData.REJECT_FACTOR.decode())))
 async def reject_factor(event: CallbackQuery.Event) -> None:
     
     try:
@@ -100,7 +94,7 @@ async def reject_factor(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage Handler, deposit with card
-@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.DEPOSIT_WITH_CARD})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.DEPOSIT_WITH_CARD})", func=lambda e: set_filter(e)))
 async def deposit_with_card(event: Message) -> None:
     
     try:
@@ -113,7 +107,7 @@ async def deposit_with_card(event: Message) -> None:
 
 
 # NewMessage Handler, get number for deposit with card
-@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*\.?[0-9]*", func=filter_get_number_for_deposit_card))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*\.?[0-9]*", func=lambda e: set_filter(e, user_step=Parts.GET_NUMBER_FOR_DEPOSIT_CARD)))
 async def get_number_for_deposit_with_card(event: Message) -> None:
     
     try:
@@ -126,7 +120,7 @@ async def get_number_for_deposit_with_card(event: Message) -> None:
 
 
 # NewMessage Handler, get number for deposit with card
-@client.on(event=NewMessage(incoming=True, func=filter_get_factor_for_deposit_card))
+@client.on(event=NewMessage(incoming=True, func=lambda e: set_filter(e, user_step=Parts.GET_FACTOR_FOR_DEPOSIT_CARD)))
 async def get_factor_for_deposit_with_card(event: Message) -> None:
     
     try:

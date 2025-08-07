@@ -4,15 +4,7 @@ from telethon.events import NewMessage, CallbackQuery, StopPropagation
 from telethon.custom import Message
 from telethon.types import PeerUser
 from functions.step_functions import Parts, set_step, delete_step, get_user_step
-from functions.filters_functions import (
-    filter_admin_move, 
-    filter_ban_user,
-    filter_unban_user, 
-    filter_user_info,
-    filter_get_user_for_work,
-    filter_increase_user_balance,
-    filter_reduce_user_balance,
-)
+from functions.filters_functions import set_filter
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from settings.strings import (
     ENTER_USER_ID,
@@ -36,7 +28,7 @@ from settings.database import SessionLocal, UserModel
 # region CallbackQuery Handlers
 
 # CallbackQuery handler, show user panel for ban, unban and more
-@client.on(event=CallbackQuery(data=InlineButtonsData.USER_SETTING_PANEL, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.USER_SETTING_PANEL, func=lambda e: set_filter(e, is_admin=True)))
 async def user_panel(event: CallbackQuery.Event) -> None:
     
     try:
@@ -48,7 +40,7 @@ async def user_panel(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for ban user
-@client.on(event=CallbackQuery(data=InlineButtonsData.BAN_USER, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BAN_USER, func=lambda e: set_filter(e, is_admin=True)))
 async def ban_user_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -61,7 +53,7 @@ async def ban_user_set_step(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for unban user
-@client.on(event=CallbackQuery(data=InlineButtonsData.UNBAN_USER, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.UNBAN_USER, func=lambda e: set_filter(e, is_admin=True)))
 async def unban_user_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -74,7 +66,7 @@ async def unban_user_set_step(event: CallbackQuery.Event) -> None:
 
     
 # CallbackQuery handler, set step for show user info
-@client.on(event=CallbackQuery(data=InlineButtonsData.SHOW_USER_INFO, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.SHOW_USER_INFO, func=lambda e: set_filter(e, is_admin=True)))
 async def show_user_info_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -87,7 +79,7 @@ async def show_user_info_set_step(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for increase user balance
-@client.on(event=CallbackQuery(data=InlineButtonsData.INCREASE_USER_BALANCE, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.INCREASE_USER_BALANCE, func=lambda e: set_filter(e, is_admin=True)))
 async def increase_user_balance_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -100,7 +92,7 @@ async def increase_user_balance_set_step(event: CallbackQuery.Event) -> None:
 
 
 # CallbackQuery handler, set step for add reduce user balance
-@client.on(event=CallbackQuery(data=InlineButtonsData.REDUCE_USER_BALANCE, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.REDUCE_USER_BALANCE, func=lambda e: set_filter(e, is_admin=True)))
 async def reduce_user_balance_set_step(event: CallbackQuery.Event) -> None:
     
     try:
@@ -118,7 +110,7 @@ async def reduce_user_balance_set_step(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage handler, Ban user
-@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_ban_user))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=lambda e: set_filter(e, is_admin=True, user_step=Parts.BAN_USER)))
 async def ban_user_from_bot(event: Message) -> None:
     
     try:
@@ -142,7 +134,7 @@ async def ban_user_from_bot(event: Message) -> None:
 
 
 # NewMessage handler, UnBan user
-@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_unban_user))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=lambda e: set_filter(e, is_admin=True, user_step=Parts.UNBAN_USER)))
 async def unban_user_from_bot(event: Message) -> None:
     
     try:
@@ -166,7 +158,7 @@ async def unban_user_from_bot(event: Message) -> None:
     
     
 # NewMessage handler, show user info
-@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_user_info))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=lambda e: set_filter(e, is_admin=True, user_step=Parts.SHOW_USER_INFO)))
 async def get_user_info(event: Message) -> None:
     
     try:
@@ -188,7 +180,7 @@ async def get_user_info(event: Message) -> None:
 
 
 # NewMessage handler, get user for increase/redice user balance
-@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=filter_get_user_for_work))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*$", func=lambda e: set_filter(e, is_admin=True, user_step=[Parts.INCREASE_USER_BALANCE, Parts.REDUCE_USER_BALANCE])))
 async def get_user_for_work(event: Message) -> None:
     try:
         
@@ -222,7 +214,7 @@ async def get_user_for_work(event: Message) -> None:
 
 
 # NewMessage handler, show increase user balance
-@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*\.?[0-9]*$", func=filter_increase_user_balance))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*\.?[0-9]*$", func=lambda e: set_filter(e, is_admin=True, user_step=Parts.INCREASE_USER_BALANCE)))
 async def increase_user_balance_get_value(event: Message) -> None:
     
     try:
@@ -253,7 +245,7 @@ async def increase_user_balance_get_value(event: Message) -> None:
 
 
 # NewMessage handler, show reduce user balance
-@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*\.?[0-9]*$", func=filter_reduce_user_balance))
+@client.on(event=NewMessage(incoming=True, pattern=r"^[0-9]*\.?[0-9]*$", func=lambda e: set_filter(e, is_admin=True, user_step=Parts.REDUCE_USER_BALANCE)))
 async def reduce_user_balance_get_value(event: Message) -> None:
     
     try:

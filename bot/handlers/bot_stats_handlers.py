@@ -4,7 +4,7 @@ from telethon.events import CallbackQuery, NewMessage, StopPropagation
 from buttons.inline_buttons import InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import bot_stats, my_account
-from functions.filters_functions import filter_user_move, filter_admin_move
+from functions.filters_functions import set_filter
 from settings.client import client
 from settings.database import SessionLocal, UserModel, ChannelModel
 
@@ -14,7 +14,7 @@ from settings.database import SessionLocal, UserModel, ChannelModel
 # region CallbackQuery Handlers
 
 # CallbackQuery handler, show bot stats
-@client.on(event=CallbackQuery(data=InlineButtonsData.BOT_STATS, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BOT_STATS, func=lambda e: set_filter(e, is_admin=True)))
 async def bot_status(event: CallbackQuery.Event) -> None:
     
     try:
@@ -34,7 +34,7 @@ async def bot_status(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage handler, show user stats
-@client.on(event=NewMessage(incoming=True, pattern=TextButtonsString.MY_ACCOUNT, func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=TextButtonsString.MY_ACCOUNT, func=lambda e: set_filter(e)))
 async def user_account_info(event: CallbackQuery.Event) -> None:
     
     try:

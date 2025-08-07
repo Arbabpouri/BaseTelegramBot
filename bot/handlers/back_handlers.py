@@ -4,7 +4,7 @@ from telethon.events import CallbackQuery, NewMessage, StopPropagation
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from settings.strings import BACKED
-from functions.filters_functions import filter_admin_move
+from functions.filters_functions import set_filter
 from settings.client import client
 
 # endregion
@@ -13,7 +13,7 @@ from settings.client import client
 # region CallBackQuery Handlers
 
 # CallbackQuery handler, back to admin panel
-@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN, func=lambda e: set_filter(e, is_admin=True)))
 async def back_to_admin_panel(event: CallbackQuery.Event) -> None:
     
     try:
@@ -25,7 +25,7 @@ async def back_to_admin_panel(event: CallbackQuery.Event) -> None:
     
     
 # CallbackQuery handler, back to admin settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN_SETTING, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_ADMIN_SETTING, func=lambda e: set_filter(e, is_admin=True)))
 async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
     
     try:
@@ -37,7 +37,7 @@ async def back_to_admin_setting(event: CallbackQuery.Event) -> None:
     
 
 # CallbackQuery handler, back to bot settings
-@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_CONFIGS_SETTING, func=filter_admin_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.BACK_TO_CONFIGS_SETTING, func=lambda e: set_filter(e, is_admin=True)))
 async def back_to_bot_setting(event: CallbackQuery.Event) -> None:
     
     try:

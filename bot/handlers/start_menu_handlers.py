@@ -5,7 +5,7 @@ from telethon.custom import Message
 from buttons.inline_buttons import InlineButtons, InlineButtonsData
 from buttons.text_buttons import TextButtons, TextButtonsString
 from buttons.url_buttons import UrlButtons
-from functions.filters_functions import filter_user_move
+from functions.filters_functions import set_filter
 from settings.strings import CONTACT_US, SELECT, referral_reply, referral_banner, StringsVariableChangable
 from settings.config import REFERRAL_IMAGE_ADDRESS, ConfigVariableChangable
 from settings.client import client
@@ -17,7 +17,7 @@ from settings.database import SessionLocal, UserModel
 # region CallBackQuery Handlers
 
 # CallBackQuery Handler, send support username
-@client.on(event=CallbackQuery(data=InlineButtonsData.MESSAGE_TO_SUPPORT_CONFIRM_RULES, func=filter_user_move))
+@client.on(event=CallbackQuery(data=InlineButtonsData.MESSAGE_TO_SUPPORT_CONFIRM_RULES, func=lambda e: set_filter(e)))
 async def send_support_username(event: CallbackQuery.Event) -> None:
     
     try:
@@ -33,7 +33,7 @@ async def send_support_username(event: CallbackQuery.Event) -> None:
 # region NewMessage Handlers
 
 # NewMessage handler, send rules
-@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.RULES})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.RULES})", func=lambda e: set_filter(e)))
 async def rules(event: Message) -> None:
     
     try:
@@ -45,7 +45,7 @@ async def rules(event: Message) -> None:
     
     
 # NewMessage handler, send help text
-@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.HELP})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.HELP})", func=lambda e: set_filter(e)))
 async def help(event: Message) -> None:
     
     try:
@@ -56,7 +56,7 @@ async def help(event: Message) -> None:
     
 
 # NewMessage handler, send support 
-@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.CONTACT_US})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.CONTACT_US})", func=lambda e: set_filter(e)))
 async def contact_us(event: Message) -> None:
     
     try:
@@ -67,7 +67,7 @@ async def contact_us(event: Message) -> None:
     
     
 # NewMessage handler, send deposit panel
-@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.DEPOSIT_PANEL})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.DEPOSIT_PANEL})", func=lambda e: set_filter(e)))
 async def deposit(event: Message) -> None:
     
     try:
@@ -79,7 +79,7 @@ async def deposit(event: Message) -> None:
     
     
 # NewMessage handler, send referral banner
-@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.REFERRAL})", func=filter_user_move))
+@client.on(event=NewMessage(incoming=True, pattern=fr"({TextButtonsString.REFERRAL})", func=lambda e: set_filter(e)))
 async def referral(event: Message) -> None:
     
     try:
