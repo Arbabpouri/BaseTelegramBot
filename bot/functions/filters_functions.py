@@ -1,13 +1,9 @@
 # region imports
 
-from telethon.types import MessageMediaPhoto
 from typing import Optional, List
 from models import UserModel
 from settings.database import SessionLocal
-from functions.step_functions import get_user_step, Parts
-from buttons.inline_buttons import InlineButtonsData
-from settings.config import FACTORS_CHANNEL_ID
-
+from functions.step_functions import get_user_step
 # endregion
 
 # region rules
@@ -47,13 +43,16 @@ def set_filter(
             if endswith:
                 if not data_or_text.endswith(startswith):
                     return False
+        
+        user_step_info = get_user_step(event.sender_id)
+
+        if user_step is None:
+            return not bool(user_step_info)
                 
-        if not (user_step is None):
+        else:
 
             if not isinstance(user_step, list):
                 user_step = [user_step]
-
-            user_step_info = get_user_step(event.sender_id)
 
             if not user_step_info or user_step_info.step not in user_step:
                 return False
